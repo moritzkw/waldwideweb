@@ -1,0 +1,23 @@
+when:
+  - event: push
+
+pipeline:
+  build:
+    image: docker:git
+    volumes:
+      - /var/run/docker.sock:/var/run/docker.sock
+    commands:
+      - docker build -t mdma-frontend:$(git rev-parse --short HEAD) .
+
+  deploy:
+    when:
+      - branch: main
+    image: docker:git
+    volumes:
+      - /var/run/docker.sock:/var/run/docker.sock
+    commands:
+      - export IMAGE_TAG=$(git rev-parse --short HEAD)
+      - export NAME=mdma-frontend
+      - docker compose -p $NAME down
+      - docker compose -p $NAME up -d
+    secrets: [domain]

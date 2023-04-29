@@ -1,0 +1,7 @@
+version: '3.9'
+
+services:
+  frontend:
+    image: mdma-frontend:${IMAGE_TAG}
+    container_name: mdma-frontend
+    restart: unless-stopped

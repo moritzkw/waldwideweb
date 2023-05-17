@@ -5,11 +5,12 @@
         <v-app-bar color="green-darken-3">
           <v-toolbar-title> WaldWideWeb </v-toolbar-title>
           <template v-slot:append>
-            <v-btn icon="mdi-login"></v-btn>
+            <LoginDialog />
             <v-btn :icon="themeIcon" @click="toggleTheme"></v-btn>
           </template>
         </v-app-bar>
-        <VisitorDashboard />
+        <!-- <VisitorDashboard /> -->
+        <router-view></router-view>
       </v-main>
     </v-app>
   </v-theme-provider>
@@ -18,12 +19,14 @@
 <script lang="ts">
 import { defineComponent } from "vue";
 import VisitorDashboard from "./components/VisitorDashboard.vue";
+import LoginDialog from "./components/LoginDialog.vue";
 
 export default defineComponent({
   name: "App",
 
   components: {
     VisitorDashboard,
+    LoginDialog
   },
 
   data() {
@@ -37,7 +40,7 @@ export default defineComponent({
     toggleTheme() {
       (this.theme = this.theme === "light" ? "dark" : "light"),
         (this.themeIcon =
-          this.theme === "light" ? "mdi-brightness-2" : "mdi-brightness-5");
+          this.theme === "light" ? "mdi-brightness-2" : "mdi-white-balance-sunny");
     },
   },
 });

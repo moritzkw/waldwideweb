@@ -1,23 +1,38 @@
 <script lang="ts">
 import { defineComponent } from "vue";
 import { useDisplay } from "vuetify";
+
 export default defineComponent({
   data: () => ({
     dialogOpen: false,
     router: {},
-    display: {}
+    display: {},
   }),
   mounted() {
-      this.display = useDisplay();
-      this.router = this.$router;
+    this.display = useDisplay();
+    this.router = this.$router;
+  },
+  computed: {
+    store() {
+      return this.$store;
+    },
   },
   methods: {
     Login() {
       this.dialogOpen = false;
-      this.router.push({path: "/admin"});
-
+      this.router.push({ path: "/admin" });
+      this.store.commit("login");
+    },
+    Logout() {
+      this.dialogOpen = false;
+      this.router.push({ path: "/" });
+      this.store.commit("logout");
+    },
+    HandleDialogAction() {
+      if (this.store.state.user.loggedIn) this.Logout();
+      else this.Login();
     }
-  }
+  },
 });
 </script>
 
@@ -25,13 +40,16 @@ export default defineComponent({
   <v-row justify="center">
     <v-dialog v-model="dialogOpen" max-width="600px">
       <template v-slot:activator="{ props }">
-        <v-btn icon="mdi-login" v-bind="props"></v-btn>
+        <v-btn
+          :icon="store.state.user.loggedIn ? 'mdi-logout' : 'mdi-login'"
+          v-bind="props"
+        ></v-btn>
       </template>
       <v-card>
         <v-card-title>
-          <span class="text-h5">Anmelden</span>
+          <span class="text-h5">{{ store.state.user.loggedIn ? "Abmelden" : "Anmelden" }}</span>
         </v-card-title>
-        <v-card-text>
+        <v-card-text :v-show="!store.state.user.loggedIn">
           <v-container>
             <v-col>
               <v-text-field label="Email*" required></v-text-field>
@@ -52,12 +70,8 @@ export default defineComponent({
           >
             Abbrechen
           </v-btn>
-          <v-btn
-            color="blue-darken-1"
-            variant="text"
-            @click="Login"
-          >
-            Anmelden
+          <v-btn color="blue-darken-1" variant="text" @click="HandleDialogAction">
+            {{ store.state.user.loggedIn ? "Abmelden" : "Anmelden" }}
           </v-btn>
         </v-card-actions>
       </v-card>

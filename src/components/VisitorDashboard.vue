@@ -48,6 +48,11 @@ export default defineComponent({
       },
     };
   },
+  computed: {
+    store() {
+      return this.$store;
+    },
+  },
 });
 </script>
 
@@ -69,7 +74,9 @@ export default defineComponent({
                       color="blue"
                       size="x-large"
                     />
-                    <div class="text-h2 ml-4">34%</div>
+                    <div class="text-h2 ml-4">
+                      {{ store.state.humidity.current }}%
+                    </div>
                   </div>
                 </v-card>
               </v-col>
@@ -81,7 +88,9 @@ export default defineComponent({
                       color="grey"
                       size="x-large"
                     />
-                    <div class="text-h2 ml-4">8km/h</div>
+                    <div class="text-h2 ml-4">
+                      {{ store.state.windSpeed.current }} km/h
+                    </div>
                   </div>
                 </v-card>
               </v-col>
@@ -97,7 +106,9 @@ export default defineComponent({
             <v-row>
               <v-col>
                 <div class="d-flex align-center">
-                  <div class="text-h2">72</div>
+                  <div class="text-h2">
+                    {{ store.state.visitorCount.current }}
+                  </div>
                   <v-icon icon="mdi-arrow-top-right ml-4" color="green" />
                 </div>
               </v-col>
@@ -115,7 +126,8 @@ export default defineComponent({
       <v-col>
         <v-card class="card" title="Waldgebiet" :elevation="5">
           <p class="pa-6">
-            Wählen Sie das Waldgebiet aus, für das Sie die aktuellen Messwerte anzeigen wollen.
+            Wählen Sie das Waldgebiet aus, für das Sie die aktuellen Messwerte
+            anzeigen wollen.
           </p>
           <v-combobox
             class="px-6"

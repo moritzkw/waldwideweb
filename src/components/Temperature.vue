@@ -41,19 +41,33 @@ export default defineComponent({
       },
     };
   },
+  computed: {
+    store() {
+      return this.$store;
+    },
+  },
   methods: {
     fillWeekDays() {
-      const weekDays = ["Montag", "Dienstag", "Mittwoch", "Donnerstag", "Freitag", "Samstag", "Sonntag"];
+      const weekDays = [
+        "Montag",
+        "Dienstag",
+        "Mittwoch",
+        "Donnerstag",
+        "Freitag",
+        "Samstag",
+        "Sonntag",
+      ];
       let week: string[] = [];
       const today = new Date();
-      for (let i = today.getDay() - 7; i < today.getDay() ; i++) {
+      for (let i = today.getDay() - 7; i < today.getDay(); i++) {
         if (i < 0) week.push(weekDays[i + 7]);
         else week.push(weekDays[i]);
       }
+      // this.tab = week[6];
       return week;
-    }
-  }
-})
+    },
+  },
+});
 </script>
 
 <template>
@@ -66,17 +80,19 @@ export default defineComponent({
             color="yellow"
             size="x-large"
           />
-          <div class="text-h2 ml-4">17°C</div>
+          <div class="text-h2 ml-4">
+            {{ store.state.temperature.current }}°C
+          </div>
         </div>
       </v-card>
     </template>
 
     <v-card title="Temperatur">
-      <v-tabs v-model="tab">
+      <v-tabs v-model="tab" align-tabs="center" center-active show-arrows>
         <!-- <v-tab value="one">Item One</v-tab>
         <v-tab value="two">Item Two</v-tab>
         <v-tab value="three">Item Three</v-tab> -->
-        <v-tab v-for="day in weekDays" :value="day">{{day}}</v-tab>
+        <v-tab v-for="day in weekDays" :value="day">{{ day }}</v-tab>
       </v-tabs>
       <v-card>
         <v-window v-model="tab">
@@ -90,7 +106,7 @@ export default defineComponent({
                       color="grey"
                       size="x-large"
                     />
-                    <div class="text-h2">13°C</div>
+                    <div class="text-h2">17°C</div>
                     <v-col class="ml-6">
                       <div class="text-h7">Min: 4°C</div>
                       <div class="text-h7">Max: 18°C</div>
@@ -114,5 +130,4 @@ export default defineComponent({
 </template>
 
 <style>
-
 </style>

@@ -1,15 +1,38 @@
-import { createStore } from 'vuex';
+import { createStore } from "vuex";
+
 
 
 export default createStore({
-  state () {
+  state() {
     return {
-      count: 0
+      temperature: {
+        current: 17,
+        lastWeekHistory: [],
+      },
+      humidity: {
+        current: 43,
+        lastWeekHistory: [],
+      },
+      windSpeed: {
+        current: 8,
+        lastWeekHistory: [],
+      },
+      visitorCount: {
+        current: 72,
+        lastWeekHistory: [],
+      },
+      user: {
+        loggedIn: false,
+        role: "visitor",
+      }
     };
   },
   mutations: {
-    increment (state: any) {
-      state.count++;
-    }
+    login(state: any) {
+      state.user.loggedIn = true;
+    },
+    logout(state: any) {
+      state.user.loggedIn = false;
+    },
   }
 });

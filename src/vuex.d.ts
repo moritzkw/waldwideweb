@@ -22,6 +22,12 @@ declare module "@vue/runtime-core" {
       loggedIn: boolean;
       role: string;
     };
+    admin: {
+      users: Array<{
+        email: string,
+        password: string,
+      }>,
+    };
   }
 
   interface ComponentCustomProperties {

@@ -1,5 +1,5 @@
 <template>
-  <v-theme-provider :theme="theme" with-background class="pa-10">
+  <v-theme-provider :theme="theme" with-background>
     <v-app>
       <v-main>
         <v-app-bar color="green-darken-3">

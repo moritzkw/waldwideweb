@@ -24,6 +24,13 @@ export default createStore({
       user: {
         loggedIn: false,
         role: "visitor",
+      },
+      admin: {
+        users: [
+          { email: "moritz@kurzweil.de", password: "1234" },
+          { email: "eisen@golem.mc", password: "4321" },
+          { email: "sven@gatn.ar", password: "0000" },
+        ]
       }
     };
   },

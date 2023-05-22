@@ -3,13 +3,13 @@ import { defineComponent } from "vue";
 import Weather from "./Weather.vue";
 import Temperature from "./Temperature.vue";
 import EditUserDialog from "./EditUserDialog.vue";
+import DeleteUserDialog from "./DeleteUserDialog.vue";
 import { GChart } from "vue-google-charts";
-import EditUserDialogVue from "./EditUserDialog.vue";
 
 // Logo
 
 export default defineComponent({
-  components: { Weather, GChart, Temperature, EditUserDialog },
+  components: { Weather, GChart, Temperature, EditUserDialog, DeleteUserDialog },
   name: "AdminDashboard",
 
   data() {
@@ -63,7 +63,7 @@ export default defineComponent({
             <v-list-item :key="user.email" :title="user.email">
               <template v-slot:append>
                 <EditUserDialog :user="user"/>
-                <v-btn icon="mdi-delete" @click="Delete(user)" flat></v-btn>
+                <DeleteUserDialog :user="user"/>
               </template>
             </v-list-item>
             <v-divider></v-divider>

@@ -4,15 +4,17 @@ import { useDisplay } from "vuetify";
 
 export default defineComponent({
   props: {
-    user: Object
+    user: Object,
   },
   data: () => ({
     dialogOpen: false,
     display: {},
+    inputUsername: "",
+    inputPassword: "",
   }),
   mounted() {
-    console.debug(this.user)
     this.display = useDisplay();
+    this.inputUsername = this.user.username;
   },
   computed: {
     store() {
@@ -20,8 +22,21 @@ export default defineComponent({
     },
   },
   methods: {
-    Save() {},
+    Save() {
+      this.dialogOpen = false
+    },
+    Abort() {
+      this.dialogOpen = false
+    },
   },
+  watch:{
+    dialogOpen:function(isOpen: boolean, wasOpen: boolean){
+      if(wasOpen && !isOpen){
+        this.inputUsername = this.user.username;
+        this.inputPassword = "";
+      }
+    }
+  }
 });
 </script>
 
@@ -38,11 +53,19 @@ export default defineComponent({
         <v-card-text>
           <v-container>
             <v-col>
-              <v-text-field label="Email" v-model="user.email"></v-text-field>
               <v-text-field
-                label="Passwort*"
+                label="Nutzername"
+                v-model="inputUsername"
+              ></v-text-field>
+              <v-text-field
+                v-model="inputPassword"
+                label="Neues Passwort"
                 type="password"
-                v-model="user.password"
+              ></v-text-field>
+              <v-text-field
+                v-model="inputPassword"
+                label="Neues Passwort wiederholen"
+                type="password"
               ></v-text-field>
             </v-col>
           </v-container>
@@ -52,13 +75,17 @@ export default defineComponent({
           <v-btn
             color="blue-darken-1"
             variant="text"
-            @click="dialogOpen = false"
+            @click="Abort"
           >
             Abbrechen
           </v-btn>
-          <v-btn color="blue-darken-1" variant="text" @click="Save"
-            >Speichern</v-btn
+          <v-btn
+            color="blue-darken-1"
+            variant="text"
+            @click="Save"
           >
+            Speichern
+          </v-btn>
         </v-card-actions>
       </v-card>
     </v-dialog>

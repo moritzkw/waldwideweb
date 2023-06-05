@@ -68,7 +68,7 @@ export default defineComponent({
         <v-btn append-icon="mdi-refresh" class="my-2">Aktualisieren</v-btn>
         <v-list class="mt-4">
           <v-container class="pa-0" v-bind="user" v-for="user in users">
-            <v-list-item :key="user.email" :title="user.email">
+            <v-list-item :key="user.username" :title="user.username">
               <template v-slot:append>
                 <EditUserDialog :user="user"/>
                 <v-spacer></v-spacer>

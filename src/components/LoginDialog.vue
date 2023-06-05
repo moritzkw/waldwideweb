@@ -7,6 +7,8 @@ export default defineComponent({
     dialogOpen: false,
     router: {},
     display: {},
+    inputUsername: "",
+    inputPassword: "",
   }),
   mounted() {
     this.display = useDisplay();
@@ -18,7 +20,9 @@ export default defineComponent({
     },
   },
   methods: {
-    Login() {
+    Login(username: string, password: string) {
+      console.debug(username);
+      console.debug(password);
       this.dialogOpen = false;
       this.router.push({ path: "/admin" });
       this.store.commit("login");
@@ -30,7 +34,7 @@ export default defineComponent({
     },
     HandleDialogAction() {
       if (this.store.state.user.loggedIn) this.Logout();
-      else this.Login();
+      else this.Login(this.inputUsername, this.inputPassword);
     }
   },
 });
@@ -52,8 +56,9 @@ export default defineComponent({
         <v-card-text :v-show="!store.state.user.loggedIn">
           <v-container>
             <v-col>
-              <v-text-field label="Email*" required></v-text-field>
+              <v-text-field model="inputUsername" label="Nutzername*" required></v-text-field>
               <v-text-field
+                model="inputPassword"
                 label="Passwort*"
                 type="password"
                 required

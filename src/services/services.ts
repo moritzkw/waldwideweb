@@ -1,0 +1,1 @@
+const BACKEND_API_URL = "https://backend.mdma.haveachin.de/";

@@ -76,6 +76,7 @@ export default defineComponent({
       <v-card class="pa-4" elevation="5">
         <v-btn append-icon="mdi-plus" class="mr-4 my-2">Nutzer anlegen</v-btn>
         <v-btn append-icon="mdi-refresh" class="my-2">Aktualisieren</v-btn>
+        <div class="ml-4 font-italic">Zuletzt aktualisiert: 07.06.2023 10:05 Uhr</div>
         <v-list class="mt-4">
           <v-container class="pa-0" v-bind="user" v-for="user in users" fluid>
             <v-list-item :key="user.username" :title="user.username" >

@@ -11,7 +11,7 @@ pipeline:
 
   deploy:
     when:
-      - branch: main
+      - branch: dev
     image: docker:git
     volumes:
       - /var/run/docker.sock:/var/run/docker.sock

@@ -24,7 +24,7 @@ export default defineComponent({
     },
     users() {
       // console.debug(this.store.state.admin.users);
-      return this.store.state.admin.users;
+      return this.store.state.users;
     },
   },
   methods: {

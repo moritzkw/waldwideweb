@@ -1,4 +1,5 @@
 import { Store } from "vuex";
+import { Role } from "./types/role";
 
 declare module "@vue/runtime-core" {
   interface State {
@@ -18,18 +19,25 @@ declare module "@vue/runtime-core" {
       current: number;
       lastWeekHistory: Array<number>;
     };
-    user: {
-      loggedIn: boolean;
-      loggingIn: boolean;
-      loggingOut: boolean;
-      role: string;
-    };
     admin: {
       users: Array<{
         email: string,
         password: string,
       }>,
     };
+
+
+    user: {
+      loggedIn: boolean;
+      loggingIn: boolean;
+      loggingOut: boolean;
+      roles: string;
+    };
+    users: User[];
+    data: {
+      types: String[];
+    },
+    roles: Role[]
   }
 
   interface ComponentCustomProperties {

@@ -1,6 +1,6 @@
 import { createStore } from "vuex";
-
-
+import { login, logout } from "../services/services";
+import { State } from "vue";
 
 export default createStore({
   state() {
@@ -23,6 +23,8 @@ export default createStore({
       },
       user: {
         loggedIn: false,
+        loggingIn: false,
+        loggingOut: false,
         role: "visitor",
       },
       admin: {
@@ -35,11 +37,23 @@ export default createStore({
     };
   },
   mutations: {
-    login(state: any) {
-      state.user.loggedIn = true;
+    startLogin(state: State) {
+      state.user.loggingIn = true;
     },
-    logout(state: any) {
-      state.user.loggedIn = false;
+    cancelLogin(state: State) {
+      state.user.loggingIn = false;
+    },
+    login(state: State, data: {username: string, password: string}) {
+      login(data.username, data.password).then(loggedIn => {
+        state.user.loggedIn = loggedIn;
+        state.user.loggingIn = !loggedIn;
+      });
+    },
+    logout(state: State) {
+      logout().then(loggedOut => {
+        state.user.loggingOut= !loggedOut;
+        state.user.loggedIn = !loggedOut;
+      });
     },
   }
 });

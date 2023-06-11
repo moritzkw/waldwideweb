@@ -20,6 +20,8 @@ declare module "@vue/runtime-core" {
     };
     user: {
       loggedIn: boolean;
+      loggingIn: boolean;
+      loggingOut: boolean;
       role: string;
     };
     admin: {

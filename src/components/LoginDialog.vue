@@ -6,8 +6,8 @@ export default defineComponent({
   data: () => ({
     router: {},
     display: {},
-    inputUsername: "",
-    inputPassword: "",
+    inputUsername: "H4r4ldD3rH4ck3r",
+    inputPassword: "password123",
   }),
   mounted() {
     this.display = useDisplay();

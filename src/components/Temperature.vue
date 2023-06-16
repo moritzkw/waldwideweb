@@ -81,7 +81,7 @@ export default defineComponent({
             size="x-large"
           />
           <div class="text-h2 ml-4">
-            {{ store.state.temperature.current }}°C
+            {{ store.state.temperature.latest ? store.state.temperature.latest.value : "-" }}°C
           </div>
         </div>
       </v-card>

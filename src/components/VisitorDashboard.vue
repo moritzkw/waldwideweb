@@ -75,7 +75,7 @@ export default defineComponent({
                       size="x-large"
                     />
                     <div class="text-h2 ml-4">
-                      {{ store.state.humidity.current }}%
+                      {{ store.state.humidity.latest ? store.state.humidity.latest.value : "-" }}%
                     </div>
                   </div>
                 </v-card>
@@ -89,7 +89,7 @@ export default defineComponent({
                       size="x-large"
                     />
                     <div class="text-h2 ml-4">
-                      {{ store.state.windSpeed.current }} km/h
+                      {{ "-" }} km/h
                     </div>
                   </div>
                 </v-card>
@@ -107,7 +107,7 @@ export default defineComponent({
               <v-col>
                 <div class="d-flex align-center">
                   <div class="text-h2">
-                    {{ store.state.visitorCount.current }}
+                    {{ "-" }}
                   </div>
                   <v-icon icon="mdi-arrow-top-right ml-4" color="green" />
                 </div>

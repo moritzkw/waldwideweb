@@ -1,34 +1,20 @@
 import { createStore } from "vuex";
-import { GetRoles, GetTypes, GetUsers, login, logout } from "../services/services";
+import { GetAggregatedData, GetData, GetRoles, GetTypes, GetUsers, login, logout } from "../services/services";
 import { State } from "vue";
+import { AggregateFunction } from "../types/aggregateFunction";
+import { Data } from "../types/data";
 
 export default createStore({
   state() {
     return {
       temperature: {
-        current: 17,
-        lastWeekHistory: [],
+        latest: null,
+        lastWeekHistory: null,
       },
       humidity: {
-        current: 43,
-        lastWeekHistory: [],
+        latest: null,
+        lastWeekHistory: null,
       },
-      windSpeed: {
-        current: 8,
-        lastWeekHistory: [],
-      },
-      visitorCount: {
-        current: 72,
-        lastWeekHistory: [],
-      },
-      admin: {
-        users: [
-          { username: "moritz", password: "moritz" },
-          { username: "eric", password: "eric" },
-          { username: "sven", password: "sven" },
-        ]
-      },
-
       user: {
         loggedIn: false,
         loggingIn: false,
@@ -43,11 +29,13 @@ export default createStore({
     };
   },
   mutations: {
-    fetchData(state: State) {
-      GetTypes().then(types => state.data.types = types);
-      GetUsers().then(users => state.users = users);
-      GetRoles().then(roles => state.roles = roles);
-      
+    async fetchData(state: State) {
+      await GetTypes().then(types => state.data.types = types);
+      await GetUsers().then(users => state.users = users);
+      await GetRoles().then(roles => state.roles = roles);
+      await GetData(state.data.types[0]).then(data => state.temperature.latest = (data as Data).data[0].measurements[0]);
+      await GetAggregatedData(state.data.types[0], AggregateFunction.COUNT, undefined, undefined, undefined, undefined, 3).then(data => console.debug(data))
+      console.debug(state)
     },
     startLogin(state: State) {
       state.user.loggingIn = true;

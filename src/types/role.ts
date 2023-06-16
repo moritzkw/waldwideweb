@@ -3,5 +3,5 @@ export interface Role {
     createdAt: string,
     updatedAt: string,
     name: string,
-    permissions: String[]
+    permissions: string[]
 }

@@ -14,11 +14,9 @@ export default defineComponent({
 
   data() {
     return {
-      error: false
+      error: false,
+      selectedFile: [],
     };
-  },
-  mounted() {
-    console.debug(this.$store.state.admin.users);
   },
   computed: {
     store() {
@@ -58,17 +56,30 @@ export default defineComponent({
             ></v-alert>
           </v-row>
           <v-row>
-            <v-file-input label="Binary auswählen" accept=".bin" class="fileinput mr-8"></v-file-input>
-            <v-btn append-icon="mdi-upload" class="mt-2" @click="error=true">Hochladen</v-btn>
+            <v-file-input
+              v-model="selectedFile"
+              label="Binary auswählen"
+              accept=".bin"
+              class="fileinput mr-8"
+              variant="solo"
+              show-size
+            ></v-file-input>
+            <v-btn
+              :disabled="selectedFile.length === 0"
+              append-icon="mdi-upload"
+              class="mt-2"
+              @click="error=true"
+            >Hochladen</v-btn>
           </v-row>
         </v-col>
       </v-card>
       <v-card class="pa-4" elevation="5">
         <v-btn append-icon="mdi-plus" class="mr-4 my-2">Nutzer anlegen</v-btn>
         <v-btn append-icon="mdi-refresh" class="my-2">Aktualisieren</v-btn>
+        <div class="ml-4 font-italic">Zuletzt aktualisiert: 07.06.2023 10:05 Uhr</div>
         <v-list class="mt-4">
-          <v-container class="pa-0" v-bind="user" v-for="user in users">
-            <v-list-item :key="user.username" :title="user.username">
+          <v-container class="pa-0" v-bind="user" v-for="user in users" fluid>
+            <v-list-item :key="user.username" :title="user.username" >
               <template v-slot:append>
                 <EditUserDialog :user="user"/>
                 <v-spacer></v-spacer>

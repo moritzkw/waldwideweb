@@ -23,8 +23,8 @@ export default defineComponent({
       return this.$store;
     },
     users() {
-      console.debug(this.store.state.admin.users);
-      return this.store.state.admin.users;
+      // console.debug(this.store.state.admin.users);
+      return this.store.state.users;
     },
   },
   methods: {

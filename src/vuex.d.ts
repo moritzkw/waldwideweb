@@ -1,33 +1,30 @@
 import { Store } from "vuex";
+import { Role } from "./types/role";
+import { Measurement } from "./types/data";
 
 declare module "@vue/runtime-core" {
   interface State {
     temperature: {
-      current: number;
+      latest: Measurement
       lastWeekHistory: Array<number>;
     };
     humidity: {
-      current: number;
+      latest: Measurement;
       lastWeekHistory: Array<number>;
     };
-    windSpeed: {
-      current: number;
-      lastWeekHistory: Array<number>;
-    };
-    visitorCount: {
-      current: number;
-      lastWeekHistory: Array<number>;
-    };
+
+
     user: {
       loggedIn: boolean;
-      role: string;
+      loggingIn: boolean;
+      loggingOut: boolean;
+      roles: string;
     };
-    admin: {
-      users: Array<{
-        email: string,
-        password: string,
-      }>,
+    users: User[];
+    data: {
+      types: string[];
     };
+    roles: Role[]
   }
 
   interface ComponentCustomProperties {

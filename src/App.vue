@@ -35,6 +35,9 @@ export default defineComponent({
       themeIcon: "mdi-brightness-2",
     };
   },
+  mounted() {
+    this.$store.commit("fetchData");
+  },
 
   methods: {
     toggleTheme() {

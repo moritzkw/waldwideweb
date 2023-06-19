@@ -13,9 +13,9 @@ export default createRouter({
       path: '/admin',
       component: () => import('../components/AdminDashboard.vue'),
     },
-    // {
-    //   path: '/forester',
-    //   component: () => import('../components/ForesterDashboard.vue'),
-    // },
+    {
+      path: '/forester',
+      component: () => import('../components/ForesterDashboard.vue'),
+    }
   ],
 })

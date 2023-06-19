@@ -6,11 +6,11 @@ import { Area } from "./types/area";
 declare module "@vue/runtime-core" {
   interface State {
     temperature: {
-      latest: Measurement
+      latest?: Measurement
       lastWeekHistory: Array<number>;
     };
     humidity: {
-      latest: Measurement;
+      latest?: Measurement;
       lastWeekHistory: Array<number>;
     };
 

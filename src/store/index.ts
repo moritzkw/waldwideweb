@@ -43,10 +43,16 @@ export default createStore({
   },
   mutations: {
     async fetchData(state: State) {
-      await GetData(state.data.types[0], [state.selectedArea]).then(
-        (data) =>
-          (state.temperature.latest = (data as Data).data[0].measurements[0])
-      );
+      await GetData(state.data.types[0], [state.selectedArea]).then((data) => {
+        state.temperature.latest = data
+          ? (data as Data).data[0].measurements[0]
+          : undefined;
+      });
+      await GetData(state.data.types[1], [state.selectedArea]).then((data) => {
+        state.humidity.latest = data
+          ? (data as Data).data[0].measurements[0]
+          : undefined;
+      });
     },
     async fetchAll(state: State) {
       await GetTypes().then((types) => (state.data.types = types));
@@ -64,11 +70,16 @@ export default createStore({
       await GetNodes().then((nodes) => (state.nodes = nodes));
       state.selectedArea = state.nodes[0].uuid;
       await GetAreas().then((areas) => (state.areas = areas));
-      await GetData(state.data.types[0], [state.selectedArea]).then(
-        (data) =>
-          (state.temperature.latest = (data as Data).data[0].measurements[0])
-      );
-      console.debug(state);
+      await GetData(state.data.types[0], [state.selectedArea]).then((data) => {
+        state.temperature.latest = data
+          ? (data as Data).data[0].measurements[0]
+          : undefined;
+      });
+      await GetData(state.data.types[1], [state.selectedArea]).then((data) => {
+        state.humidity.latest = data
+          ? (data as Data).data[0].measurements[0]
+          : undefined;
+      });
     },
     startLogin(state: State) {
       state.user.loggingIn = true;

@@ -4,6 +4,7 @@ import { Data } from "../types/data";
 import { SingleData } from "../types/singleData";
 import { AggregateFunction } from "../types/aggregateFunction";
 import { AggregatedData } from "../types/aggregatedData";
+import { Area } from "../types/area";
 
 const BACKEND_API_URL = "https://backend.mdma.haveachin.de";
 const config = {
@@ -107,5 +108,17 @@ export async function GetAggregatedData(
 
 export async function GetSingleData(uuid: string): Promise<SingleData> {
   const response = await axios.get(BACKEND_API_URL + `/data/${uuid}`, config);
+  return response.data;
+}
+
+export async function GetNodes(): Promise<Node[]> {
+  const response = await axios.get(BACKEND_API_URL + "/mesh-nodes", config);
+  console.debug(response.data)
+  return response.data;
+}
+
+export async function GetAreas(): Promise<Area[]> {
+  const response = await axios.get(BACKEND_API_URL + "/areas", config);
+  console.debug(response.data)
   return response.data;
 }

@@ -1,5 +1,5 @@
 import { createStore } from "vuex";
-import { GetAggregatedData, GetData, GetRoles, GetTypes, GetUsers, login, logout } from "../services/services";
+import { GetAggregatedData, GetAreas, GetData, GetNodes, GetRoles, GetTypes, GetUsers, login, logout } from "../services/services";
 import { State } from "vue";
 import { AggregateFunction } from "../types/aggregateFunction";
 import { Data } from "../types/data";
@@ -21,7 +21,10 @@ export default createStore({
         loggingOut: false,
         role: "visitor",
       },
+      selectedArea: "",
       users: [],
+      nodes: [],
+      areas: [],
       data: {
         types: [],
       },
@@ -30,11 +33,17 @@ export default createStore({
   },
   mutations: {
     async fetchData(state: State) {
+      await GetData(state.data.types[0], [state.selectedArea]).then(data => state.temperature.latest = (data as Data).data[0].measurements[0]);
+    },
+    async fetchAll(state: State) {
       await GetTypes().then(types => state.data.types = types);
       await GetUsers().then(users => state.users = users);
       await GetRoles().then(roles => state.roles = roles);
-      await GetData(state.data.types[0]).then(data => state.temperature.latest = (data as Data).data[0].measurements[0]);
       await GetAggregatedData(state.data.types[0], AggregateFunction.COUNT, undefined, undefined, undefined, undefined, 3).then(data => console.debug(data))
+      await GetNodes().then(nodes => state.nodes = nodes);
+      state.selectedArea = state.nodes[0].uuid;
+      await GetAreas().then(areas => state.areas = areas);
+      await GetData(state.data.types[0], [state.selectedArea]).then(data => state.temperature.latest = (data as Data).data[0].measurements[0]);
       console.debug(state)
     },
     startLogin(state: State) {

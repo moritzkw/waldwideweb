@@ -36,7 +36,7 @@ export default defineComponent({
     };
   },
   mounted() {
-    this.$store.commit("fetchData");
+    this.$store.commit("fetchAll");
   },
 
   methods: {

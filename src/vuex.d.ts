@@ -1,6 +1,7 @@
 import { Store } from "vuex";
 import { Role } from "./types/role";
 import { Measurement } from "./types/data";
+import { Area } from "./types/area";
 
 declare module "@vue/runtime-core" {
   interface State {
@@ -20,6 +21,9 @@ declare module "@vue/runtime-core" {
       loggingOut: boolean;
       roles: string;
     };
+    selectedArea: string;
+    nodes: Node[];
+    areas: Area[];
     users: User[];
     data: {
       types: string[];

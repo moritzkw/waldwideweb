@@ -1,8 +1,11 @@
 <script lang="ts">
-import { defineComponent } from "vue";
+import { State, defineComponent } from "vue";
 import Weather from "./Weather.vue";
 import Temperature from "./Temperature.vue";
 import { GChart } from "vue-google-charts";
+import store from "../store/index";
+import { Store } from "vuex/types/index.js";
+import { Area } from "../types/area";
 
 // Logo
 
@@ -13,7 +16,7 @@ export default defineComponent({
   data() {
     return {
       // Array will be automatically processed with visualization.arrayToDataTable function
-      forestAreas: ["Wald A", "Wald B", "Wald C", "Wald D", "Wald E"],
+      forestAreas: [] as Node[],
       chartData: [
         ["Tag", "Besucher"],
         ["Donnerstag", 83],
@@ -48,11 +51,27 @@ export default defineComponent({
       },
     };
   },
+  mounted() {
+    this.forestAreas = (store as Store<State>).state.nodes.reduce((nodes: Node[], node: Node) => nodes.concat(node.uuid), [] as Node[]);
+    },
   computed: {
     store() {
       return this.$store;
     },
+    nodes() {
+      if (store.state.areas) {
+        return (store as Store<State>).state.nodes.reduce((nodes: Node[], node: Node) => nodes.concat(node.uuid), [] as Node[]);
+        // return (store.state.areas as Area[]).reduce((areas: string[], area: Area) => areas.concat(area.areaId.toString()), [] as string[]);
+      } else {
+        return [];
+      }
+    }
   },
+  methods: {
+    updateData() {
+      store.commit("fetchData");
+    }
+  }
 });
 </script>
 
@@ -130,9 +149,11 @@ export default defineComponent({
             anzeigen wollen.
           </p>
           <v-combobox
+            v-model="store.state.selectedArea"
             class="px-6"
             label="Waldgebiet auswählen"
-            :items="forestAreas"
+            :items="nodes"
+            @update:modelValue="updateData"
           ></v-combobox>
         </v-card>
         <!-- <weather></weather> -->

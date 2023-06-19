@@ -52,26 +52,32 @@ export default defineComponent({
     };
   },
   mounted() {
-    this.forestAreas = (store as Store<State>).state.nodes.reduce((nodes: Node[], node: Node) => nodes.concat(node.uuid), [] as Node[]);
-    },
+    this.forestAreas = (store as Store<State>).state.nodes.reduce(
+      (nodes: Node[], node: Node) => nodes.concat(node.uuid),
+      [] as Node[]
+    );
+  },
   computed: {
     store() {
       return this.$store;
     },
     nodes() {
       if (store.state.areas) {
-        return (store as Store<State>).state.nodes.reduce((nodes: Node[], node: Node) => nodes.concat(node.uuid), [] as Node[]);
+        return (store as Store<State>).state.nodes.reduce(
+          (nodes: Node[], node: Node) => nodes.concat(node.uuid),
+          [] as Node[]
+        );
         // return (store.state.areas as Area[]).reduce((areas: string[], area: Area) => areas.concat(area.areaId.toString()), [] as string[]);
       } else {
         return [];
       }
-    }
+    },
   },
   methods: {
     updateData() {
       store.commit("fetchData");
-    }
-  }
+    },
+  },
 });
 </script>
 
@@ -94,7 +100,11 @@ export default defineComponent({
                       size="x-large"
                     />
                     <div class="text-h2 ml-4">
-                      {{ store.state.humidity.latest ? store.state.humidity.latest.value : "-" }}%
+                      {{
+                        store.state.humidity.latest
+                          ? store.state.humidity.latest.value
+                          : "-"
+                      }}%
                     </div>
                   </div>
                 </v-card>
@@ -107,9 +117,7 @@ export default defineComponent({
                       color="grey"
                       size="x-large"
                     />
-                    <div class="text-h2 ml-4">
-                      {{ "-" }} km/h
-                    </div>
+                    <div class="text-h2 ml-4">{{ "-" }} km/h</div>
                   </div>
                 </v-card>
               </v-col>

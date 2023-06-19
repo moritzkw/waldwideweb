@@ -113,12 +113,10 @@ export async function GetSingleData(uuid: string): Promise<SingleData> {
 
 export async function GetNodes(): Promise<Node[]> {
   const response = await axios.get(BACKEND_API_URL + "/mesh-nodes", config);
-  console.debug(response.data)
   return response.data;
 }
 
 export async function GetAreas(): Promise<Area[]> {
   const response = await axios.get(BACKEND_API_URL + "/areas", config);
-  console.debug(response.data)
   return response.data;
 }

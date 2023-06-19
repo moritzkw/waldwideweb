@@ -48,7 +48,7 @@ export async function login(
 }
 
 export async function logout(): Promise<boolean> {
-  const response = await axios.post(BACKEND_API_URL + "/logout", config);
+  const response = await axios.delete(BACKEND_API_URL + "/logout", config);
   return response.status === 200;
 }
 

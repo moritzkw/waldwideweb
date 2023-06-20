@@ -3,15 +3,17 @@ import { defineComponent } from "vue";
 import Weather from "./Weather.vue";
 import Temperature from "./Temperature.vue";
 import { GChart } from "vue-google-charts";
+import { GoogleMap, Marker } from "vue3-google-map";
 
 // Logo
 
 export default defineComponent({
-  components: { Weather, GChart, Temperature },
+  components: { Weather, GChart, Temperature, GoogleMap, Marker },
   name: "ForesterDashboard",
 
   data() {
     return {
+      center: { lat: 40.689247, lng: -74.044502 },
       // Array will be automatically processed with visualization.arrayToDataTable function
       forestAreas: ["Wald A", "Wald B", "Wald C", "Wald D", "Wald E"],
       chartData: [
@@ -95,6 +97,17 @@ export default defineComponent({
                 </v-card>
               </v-col>
             </v-row>
+          </v-container>
+        </v-card>
+      </v-col>
+    </v-row>
+    <v-row>
+      <v-col>
+        <v-card class="card" title="Sensoren" :elevation="5">
+          <v-container>
+            <GoogleMap api-key="AIzaSyBiaS391syegtj4i98-M0E7ylzmItDTDsc" style="height: 300px" :center="center" :zoom="15">
+              <Marker :options="{ position: center }" />
+            </GoogleMap>
           </v-container>
         </v-card>
       </v-col>

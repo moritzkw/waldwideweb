@@ -44,7 +44,7 @@ export default defineComponent({
           v-bind="props"
         ></v-btn>
       </template>
-      <v-card>
+      <v-card v-if="!$store.state.user.loggedIn">
         <v-card-title>
           <span class="text-h5">{{ $store.state.user.loggedIn ? "Abmelden" : "Anmelden" }}</span>
         </v-card-title>
@@ -61,6 +61,24 @@ export default defineComponent({
             </v-col>
           </v-container>
         </v-card-text>
+        <v-card-actions>
+          <v-spacer></v-spacer>
+          <v-btn
+            color="blue-darken-1"
+            variant="text"
+            @click="CancelLogin"
+          >
+            Abbrechen
+          </v-btn>
+          <v-btn color="blue-darken-1" variant="text" @click="HandleDialogAction">
+            {{ $store.state.user.loggedIn ? "Abmelden" : "Anmelden" }}
+          </v-btn>
+        </v-card-actions>
+      </v-card>
+      <v-card v-else>
+        <v-card-title>
+          <span class="text-h5">{{ $store.state.user.loggedIn ? "Abmelden" : "Anmelden" }}</span>
+        </v-card-title>
         <v-card-actions>
           <v-spacer></v-spacer>
           <v-btn

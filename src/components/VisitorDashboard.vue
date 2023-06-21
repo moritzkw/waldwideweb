@@ -161,7 +161,7 @@ export default defineComponent({
 </template>
 
 <script lang="ts">
-import { defineComponent} from "vue";
+import { ref } from 'vue';
 import Weather from "./Weather.vue";
 import Temperature from "./Temperature.vue";
 import Chart from 'chart.js/auto';
@@ -171,25 +171,6 @@ export default {
 
   name: "VisitorDashboard",
 
-  data() {
-    return {
-      forestAreas: ["Wald A", "Wald B", "Wald C", "Wald D", "Wald E"],
-      chartData: {
-        labels: ["Donnerstag", "Freitag", "Samstag", "Sonntag", "Montag", "Dienstag", "Mittwoch"],
-        datasets: [
-          {  
-          },
-        ],
-      },
-      chartOptions: {
-  responsive: true,
-  maintainAspectRatio: false
-},
-      humidityValue: 0,
-      windSpeed: 0,
-      chartInstance: null,
-    };
-  },
   mounted() {
     const ctx = document.getElementById('lineChart');
 

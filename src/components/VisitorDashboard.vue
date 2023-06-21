@@ -94,11 +94,7 @@ export default defineComponent({
               <v-col>
                 <v-card class="card" title="Luftfeuchtigkeit" elevation="0">
                   <div class="d-flex align-center">
-                    <v-icon
-                      icon="mdi-water-outline"
-                      color="blue"
-                      size="x-large"
-                    />
+                    <v-icon icon="mdi-water-outline" color="blue" size="x-large" />
                     <div class="text-h2 ml-4">
                       {{
                         store.state.humidity.latest
@@ -134,17 +130,13 @@ export default defineComponent({
               <v-col>
                 <div class="d-flex align-center">
                   <div class="text-h2">
-                    {{ "-" }}
+                    {{ chartData.datasets[0].data[chartData.datasets[0].data.length - 1] }}
                   </div>
                   <v-icon icon="mdi-arrow-top-right ml-4" color="green" />
                 </div>
               </v-col>
               <v-col>
-                <GChart
-                  type="LineChart"
-                  :data="chartData"
-                  :options="chartOptions"
-                />
+                <line :data="chartData" :options="chartOptions"></line>
               </v-col>
             </v-row>
           </v-container>
@@ -153,8 +145,7 @@ export default defineComponent({
       <v-col>
         <v-card class="card" title="Waldgebiet" :elevation="5">
           <p class="pa-6">
-            Wählen Sie das Waldgebiet aus, für das Sie die aktuellen Messwerte
-            anzeigen wollen.
+            Wählen Sie das Waldgebiet aus, für das Sie die aktuellen Messwerte anzeigen wollen.
           </p>
           <v-combobox
             v-model="store.state.selectedArea"
@@ -164,11 +155,70 @@ export default defineComponent({
             @update:modelValue="updateData"
           ></v-combobox>
         </v-card>
-        <!-- <weather></weather> -->
       </v-col>
     </v-row>
   </v-container>
 </template>
+
+<script lang="ts">
+import { defineComponent} from "vue";
+import Weather from "./Weather.vue";
+import Temperature from "./Temperature.vue";
+import {
+  Chart as ChartJS,
+  CategoryScale,
+  LinearScale,
+  PointElement,
+  LineElement,
+  Title,
+  Tooltip,
+  Legend
+} from 'chart.js'
+import { Line } from 'vue-chartjs'
+
+ChartJS.register(
+  CategoryScale,
+  LinearScale,
+  PointElement,
+  LineElement,
+  Title,
+  Tooltip,
+  Legend
+)
+
+export default defineComponent({
+  components: { Weather, Temperature, Line },
+
+  name: "VisitorDashboard",
+
+  data() {
+    return {
+      forestAreas: ["Wald A", "Wald B", "Wald C", "Wald D", "Wald E"],
+      chartData: {
+        labels: ["Donnerstag", "Freitag", "Samstag", "Sonntag", "Montag", "Dienstag", "Mittwoch"],
+        datasets: [
+          {
+            label: "Besucher",
+            data: [83, 147, 154, 169, 65, 49, 72],
+            backgroundColor: "rgba(75, 192, 192, 0.2)",
+            borderColor: "rgba(75, 192, 192, 1)",
+            borderWidth: 1,
+            pointStyle: "circle",
+            pointRadius: 8,
+          },
+        ],
+      },
+      chartOptions: {
+  responsive: true,
+  maintainAspectRatio: false
+},
+      humidityValue: 0,
+      windSpeed: 0,
+      chartInstance: null,
+    };
+  },
+});
+</script>
 
 <style>
 .card:hover {

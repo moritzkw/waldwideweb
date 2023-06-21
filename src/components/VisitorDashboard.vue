@@ -130,13 +130,13 @@ export default defineComponent({
               <v-col>
                 <div class="d-flex align-center">
                   <div class="text-h2">
-                    {{ chartData.datasets[0].data[chartData.datasets[0].data.length - 1] }}
+                    72<!-- {{ chartData.datasets[0].data[chartData.datasets[0].data.length - 1] }} -->
                   </div>
                   <v-icon icon="mdi-arrow-top-right ml-4" color="green" />
                 </div>
               </v-col>
-              <v-col>
-                <line :data="chartData" :options="chartOptions"></line>
+              <v-col fluid>
+                <canvas id="lineChart" width="200" height="200"></canvas>
               </v-col>
             </v-row>
           </v-container>
@@ -164,30 +164,10 @@ export default defineComponent({
 import { defineComponent} from "vue";
 import Weather from "./Weather.vue";
 import Temperature from "./Temperature.vue";
-import {
-  Chart as ChartJS,
-  CategoryScale,
-  LinearScale,
-  PointElement,
-  LineElement,
-  Title,
-  Tooltip,
-  Legend
-} from 'chart.js'
-import { Line } from 'vue-chartjs'
+import Chart from 'chart.js/auto';
 
-ChartJS.register(
-  CategoryScale,
-  LinearScale,
-  PointElement,
-  LineElement,
-  Title,
-  Tooltip,
-  Legend
-)
-
-export default defineComponent({
-  components: { Weather, Temperature, Line },
+export default {
+  components: { Weather, Temperature},
 
   name: "VisitorDashboard",
 
@@ -197,14 +177,7 @@ export default defineComponent({
       chartData: {
         labels: ["Donnerstag", "Freitag", "Samstag", "Sonntag", "Montag", "Dienstag", "Mittwoch"],
         datasets: [
-          {
-            label: "Besucher",
-            data: [83, 147, 154, 169, 65, 49, 72],
-            backgroundColor: "rgba(75, 192, 192, 0.2)",
-            borderColor: "rgba(75, 192, 192, 1)",
-            borderWidth: 1,
-            pointStyle: "circle",
-            pointRadius: 8,
+          {  
           },
         ],
       },
@@ -217,7 +190,35 @@ export default defineComponent({
       chartInstance: null,
     };
   },
-});
+  mounted() {
+    const ctx = document.getElementById('lineChart');
+
+    const lineChart = new Chart(ctx, {
+    type: 'line',
+    forestAreas: ["Wald A", "Wald B", "Wald C", "Wald D", "Wald E"],
+    data: {
+      labels: ["Donnerstag", "Freitag", "Samstag", "Sonntag", "Montag", "Dienstag", "Mittwoch"],
+      datasets: [{
+        label: "Besucher",
+            data: [83, 147, 154, 169, 65, 49, 2],
+            backgroundColor: "rgba(46, 125, 50, 0.2)",
+            borderColor: "rgba(46, 125, 50, 1)",
+            borderWidth: 1,
+            pointStyle: "circle",
+            pointRadius: 2,
+      }]
+    },
+    options: {
+      scales: {
+        y: {
+          beginAtZero: true
+        }
+      }
+    }
+  });
+  lineChart;
+  },
+};
 </script>
 
 <style>

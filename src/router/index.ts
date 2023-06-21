@@ -13,6 +13,10 @@ export default createRouter({
       path: '/admin',
       component: () => import('../components/AdminDashboard.vue'),
     },
+    {
+      path: '/test',
+      component: () => import('../components/Test.vue'),
+    },
     // {
     //   path: '/forester',
     //   component: () => import('../components/ForesterDashboard.vue'),

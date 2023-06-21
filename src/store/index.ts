@@ -1,5 +1,7 @@
 import { createStore } from "vuex";
 import {
+  AddUser,
+  DeleteUser,
   GetAggregatedData,
   GetAreas,
   GetData,
@@ -13,6 +15,7 @@ import {
 import { State } from "vue";
 import { AggregateFunction } from "../types/aggregateFunction";
 import { Data } from "../types/data";
+import { User } from "../types/user";
 
 export default createStore({
   state() {
@@ -102,5 +105,11 @@ export default createStore({
         state.user.loggedIn = !loggedOut;
       });
     },
+    addUser(state: State, user: { username: string; password: string, roleId: number }) {
+      AddUser(user.username, user.password, user.roleId).then(() => GetUsers().then((users) => (state.users = users)))
+    },
+    deleteUser(state: State, user: User) {
+      DeleteUser(user).then(() => GetUsers().then((users) => (state.users = users)))
+    }
   },
 });

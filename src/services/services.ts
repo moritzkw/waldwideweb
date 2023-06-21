@@ -5,6 +5,7 @@ import { SingleData } from "../types/singleData";
 import { AggregateFunction } from "../types/aggregateFunction";
 import { AggregatedData } from "../types/aggregatedData";
 import { Area } from "../types/area";
+import { User } from "../types/user";
 
 const BACKEND_API_URL = "https://backend.mdma.haveachin.de";
 const config = {
@@ -63,6 +64,22 @@ export async function GetUsers(): Promise<String[]> {
   return await axios.get(BACKEND_API_URL + "/accounts/users", config)
     .then(response => response.data)
     .catch(() => []);
+}
+
+export async function AddUser(username: string, password: string, roleId: number): Promise<boolean> {
+  return await axios.post(BACKEND_API_URL + "/accounts/users", {
+    username: username,
+    password: password,
+    roleId: roleId
+  }, config)
+    .then(response => response.status === 201)
+    .catch(() => false);
+}
+
+export async function DeleteUser(user: User): Promise<boolean> {
+  return await axios.delete(BACKEND_API_URL + `/accounts/users/${user.id}`, config)
+    .then(response => response.status === 204)
+    .catch(() => false);
 }
 
 export async function GetRoles(): Promise<Role[]> {

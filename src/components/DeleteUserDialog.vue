@@ -19,7 +19,9 @@ export default defineComponent({
     },
   },
   methods: {
-    Save() {},
+    Delete() {
+      this.store.commit("deleteUser", this.user);
+    },
   },
 });
 </script>
@@ -47,7 +49,7 @@ export default defineComponent({
           >
             Abbrechen
           </v-btn>
-          <v-btn color="blue-darken-1" variant="text" @click="Save"
+          <v-btn color="blue-darken-1" variant="text" @click="Delete"
             >Löschen</v-btn
           >
         </v-card-actions>

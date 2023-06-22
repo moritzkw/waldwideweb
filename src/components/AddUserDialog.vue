@@ -48,7 +48,7 @@ export default defineComponent({
       this.passwordRepeat = "";
       this.role = "";
       
-      this.addUserDialog = false;
+      this.dialogOpen = false;
     }
   }
 });

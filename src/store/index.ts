@@ -9,6 +9,7 @@ import {
   GetRoles,
   GetTypes,
   GetUsers,
+  UpdateUser,
   login,
   logout,
 } from "../services/services";
@@ -105,11 +106,29 @@ export default createStore({
         state.user.loggedIn = !loggedOut;
       });
     },
-    addUser(state: State, user: { username: string; password: string, roleId: number }) {
-      AddUser(user.username, user.password, user.roleId).then(() => GetUsers().then((users) => (state.users = users)))
+    addUser(
+      state: State,
+      user: { username: string; password: string; roleId: number }
+    ) {
+      AddUser(user.username, user.password, user.roleId).then(() =>
+        GetUsers().then((users) => (state.users = users))
+      );
+    },
+    updateUser(
+      state: State,
+      update: { user: User; username: string; password: string; roleId: number }
+    ) {
+      UpdateUser(
+        update.user,
+        update.username,
+        update.password,
+        update.roleId
+      ).then(() => GetUsers().then((users) => (state.users = users)));
     },
     deleteUser(state: State, user: User) {
-      DeleteUser(user).then(() => GetUsers().then((users) => (state.users = users)))
-    }
+      DeleteUser(user).then(() =>
+        GetUsers().then((users) => (state.users = users))
+      );
+    },
   },
 });

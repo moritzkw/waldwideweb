@@ -76,6 +76,16 @@ export async function AddUser(username: string, password: string, roleId: number
     .catch(() => false);
 }
 
+export async function UpdateUser(user: User, username: string, password: string, roleId: number): Promise<boolean> {
+  return await axios.put(BACKEND_API_URL + `/accounts/users/${user.id}`, {
+    username: username,
+    password: password,
+    roleId: roleId
+  }, config)
+    .then(response => response.status === 200)
+    .catch(() => false);
+}
+
 export async function DeleteUser(user: User): Promise<boolean> {
   return await axios.delete(BACKEND_API_URL + `/accounts/users/${user.id}`, config)
     .then(response => response.status === 204)

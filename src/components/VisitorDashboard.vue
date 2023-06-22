@@ -6,10 +6,13 @@ import { GChart } from "vue-google-charts";
 import store from "../store/index";
 import { Store } from "vuex/types/index.js";
 import { Area } from "../types/area";
+import { ref } from 'vue';
+import Chart from 'chart.js/auto';
+
 
 // Logo
 
-export default defineComponent({
+export default ({
   components: { Weather, GChart, Temperature },
   name: "VisitorDashboard",
 
@@ -136,7 +139,7 @@ export default defineComponent({
                 </div>
               </v-col>
               <v-col fluid>
-                <canvas id="lineChart" width="200" height="200"></canvas>
+                <canvas id="lineChartVisitor" width="200" height="200"></canvas>
               </v-col>
             </v-row>
           </v-container>
@@ -159,48 +162,6 @@ export default defineComponent({
     </v-row>
   </v-container>
 </template>
-
-<script lang="ts">
-import { ref } from 'vue';
-import Weather from "./Weather.vue";
-import Temperature from "./Temperature.vue";
-import Chart from 'chart.js/auto';
-
-export default {
-  components: { Weather, Temperature},
-
-  name: "VisitorDashboard",
-
-  mounted() {
-    const ctx = document.getElementById('lineChart');
-
-    const lineChart = new Chart(ctx, {
-    type: 'line',
-    forestAreas: ["Wald A", "Wald B", "Wald C", "Wald D", "Wald E"],
-    data: {
-      labels: ["Donnerstag", "Freitag", "Samstag", "Sonntag", "Montag", "Dienstag", "Mittwoch"],
-      datasets: [{
-        label: "Besucher",
-            data: [83, 147, 154, 169, 65, 49, 2],
-            backgroundColor: "rgba(46, 125, 50, 0.2)",
-            borderColor: "rgba(46, 125, 50, 1)",
-            borderWidth: 1,
-            pointStyle: "circle",
-            pointRadius: 2,
-      }]
-    },
-    options: {
-      scales: {
-        y: {
-          beginAtZero: true
-        }
-      }
-    }
-  });
-  lineChart;
-  },
-};
-</script>
 
 <style>
 .card:hover {

@@ -1,6 +1,8 @@
 <script lang="ts">
-import { defineComponent } from "vue";
+import { State, defineComponent } from "vue";
 import { useDisplay } from "vuetify";
+import { Store } from "vuex/types/index.js";
+import { Role } from "../types/role";
 
 export default defineComponent({
   props: {
@@ -9,20 +11,39 @@ export default defineComponent({
   data: () => ({
     dialogOpen: false,
     display: {},
-    inputUsername: "",
-    inputPassword: "",
+    username: "",
+    password: "",
+    passwordRepeat: "",
+    role: "",
   }),
   mounted() {
     this.display = useDisplay();
-    this.inputUsername = this.user.username;
+    this.username = this.user.username;
+    this.role = this.store.state.roles.find(role => role.id === this.user.roleId).name
   },
   computed: {
     store() {
       return this.$store;
     },
+    roles() {
+      if (this.store.state.roles) {
+        return (this.store as Store<State>).state.roles.reduce(
+          (roles: Role[], role: Role) => roles.concat(role.name),
+          [] as Role[]
+        );
+      } else {
+        return [];
+      }
+    }
   },
   methods: {
     Save() {
+      this.store.commit("updateUser", {
+        user: this.user,
+        username: this.username,
+        password: this.password,
+        roleId: this.store.state.roles.find<Role>((role: Role) => role.name === this.role)!.id
+      })
       this.dialogOpen = false
     },
     Abort() {
@@ -32,8 +53,8 @@ export default defineComponent({
   watch:{
     dialogOpen:function(isOpen: boolean, wasOpen: boolean){
       if(wasOpen && !isOpen){
-        this.inputUsername = this.user.username;
-        this.inputPassword = "";
+        this.username = this.user.username;
+        this.password = "";
       }
     }
   }
@@ -52,22 +73,28 @@ export default defineComponent({
         </v-card-title>
         <v-card-text>
           <v-container>
-            <v-col>
+            <v-form>
               <v-text-field
                 label="Nutzername"
-                v-model="inputUsername"
+                v-model="username"
               ></v-text-field>
               <v-text-field
-                v-model="inputPassword"
+                v-model="password"
                 label="Neues Passwort"
                 type="password"
               ></v-text-field>
               <v-text-field
-                v-model="inputPassword"
+                v-model="passwordRepeat"
                 label="Neues Passwort wiederholen"
                 type="password"
               ></v-text-field>
-            </v-col>
+              <v-combobox
+                v-model="role"
+                label="Nutzerrolle"
+                :items="roles"
+                required
+              ></v-combobox>
+            </v-form>
           </v-container>
         </v-card-text>
         <v-card-actions>

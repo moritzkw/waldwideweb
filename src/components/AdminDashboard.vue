@@ -1,38 +1,44 @@
 <script lang="ts">
-import { defineComponent } from "vue";
+import { State, defineComponent } from "vue";
 import Weather from "./Weather.vue";
 import Temperature from "./Temperature.vue";
 import EditUserDialog from "./EditUserDialog.vue";
 import DeleteUserDialog from "./DeleteUserDialog.vue";
 import { GChart } from "vue-google-charts";
+import { Store } from "vuex/types/index.js";
+import { Role } from "../types/role";
+import AddUserDialog from "./AddUserDialog.vue";
 
 // Logo
 
 export default defineComponent({
-  components: { Weather, GChart, Temperature, EditUserDialog, DeleteUserDialog },
+  components: { Weather, GChart, Temperature, EditUserDialog, DeleteUserDialog, AddUserDialog },
   name: "AdminDashboard",
 
   data() {
     return {
       error: false,
       selectedFile: [],
+      addUserDialog: false,
+      userToEdit: {
+        username: "",
+        password: "",
+        passwordRepeat: "",
+        role: "",
+      }
     };
   },
   computed: {
-    store() {
+    store(): Store<State> {
       return this.$store;
     },
     users() {
-      // console.debug(this.store.state.admin.users);
       return this.store.state.users;
     },
   },
   methods: {
     Edit(user: any) {
       console.debug("edit " + user.email);
-    },
-    Delete(user: any) {
-      console.debug("delete " + user.email);
     },
   },
 });
@@ -74,11 +80,11 @@ export default defineComponent({
         </v-col>
       </v-card>
       <v-card class="pa-4" elevation="5">
-        <v-btn append-icon="mdi-plus" class="mr-4 my-2">Nutzer anlegen</v-btn>
+        <AddUserDialog></AddUserDialog>
         <v-btn append-icon="mdi-refresh" class="my-2">Aktualisieren</v-btn>
         <div class="ml-4 font-italic">Zuletzt aktualisiert: 07.06.2023 10:05 Uhr</div>
         <v-list class="mt-4">
-          <v-container class="pa-0" v-bind="user" v-for="user in users" fluid>
+          <v-container class="pa-0" v-bind="user" v-for="user in users" :key="user.username" fluid>
             <v-list-item :key="user.username" :title="user.username" >
               <template v-slot:append>
                 <EditUserDialog :user="user"/>

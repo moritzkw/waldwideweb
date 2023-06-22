@@ -73,7 +73,7 @@ export default defineComponent({
         </v-card-title>
         <v-card-text>
           <v-container>
-            <v-form>
+            <v-col>
               <v-text-field
                 label="Nutzername"
                 v-model="username"
@@ -94,7 +94,7 @@ export default defineComponent({
                 :items="roles"
                 required
               ></v-combobox>
-            </v-form>
+            </v-col>
           </v-container>
         </v-card-text>
         <v-card-actions>

@@ -8,13 +8,15 @@ import { Area } from "../types/area";
 import { User } from "../types/user";
 
 const BACKEND_API_URL = "https://backend.mdma.haveachin.de";
-const config = {
-  mode: "no-cors",
-  headers: {
-    "Content-Type": "application/json",
-    Authorization: `Bearer ${document.cookie.substring(6)}`,
-  },
-};
+function config() {
+  return {
+    mode: "no-cors",
+    headers: {
+      "Content-Type": "application/json",
+      Authorization: `Bearer ${document.cookie.substring(6)}`,
+    }
+  };
+}
 
 /**
  *
@@ -49,19 +51,19 @@ export async function login(
 }
 
 export async function logout(): Promise<boolean> {
-  return await axios.delete(BACKEND_API_URL + "/logout", config)
+  return await axios.delete(BACKEND_API_URL + "/logout", config())
     .then(response => response.status === 200)
     .catch(() => false);
 }
 
 export async function GetTypes(): Promise<string[]> {
-  return await axios.get(BACKEND_API_URL + "/data/types", config)
+  return await axios.get(BACKEND_API_URL + "/data/types", config())
     .then(response => response.data)
     .catch(() => []);
 }
 
 export async function GetUsers(): Promise<String[]> {
-  return await axios.get(BACKEND_API_URL + "/accounts/users", config)
+  return await axios.get(BACKEND_API_URL + "/accounts/users", config())
     .then(response => response.data)
     .catch(() => []);
 }
@@ -86,19 +88,19 @@ export async function UpdateUser(user: User, username: string, roleId: number, p
     roleId: roleId
   }
 
-  return await axios.put(BACKEND_API_URL + `/accounts/users/${user.id}`, params, config)
+  return await axios.put(BACKEND_API_URL + `/accounts/users/${user.id}`, params, config())
     .then(response => response.status === 200)
     .catch(() => false);
 }
 
 export async function DeleteUser(user: User): Promise<boolean> {
-  return await axios.delete(BACKEND_API_URL + `/accounts/users/${user.id}`, config)
+  return await axios.delete(BACKEND_API_URL + `/accounts/users/${user.id}`, config())
     .then(response => response.status === 204)
     .catch(() => false);
 }
 
 export async function GetRoles(): Promise<Role[]> {
-  return await axios.get(BACKEND_API_URL + "/roles", config)
+  return await axios.get(BACKEND_API_URL + "/roles", config())
     .then(response => response.data)
     .catch(() => []);
 }
@@ -116,7 +118,7 @@ export async function GetData(
     requestUrl += `&measuredStart=${measuredStart.toISOString()}`;
   if (measuredEnd) requestUrl += `&measuredEnd=${measuredEnd.toISOString()}`;
 
-  return await axios.get(encodeURI(requestUrl), config)
+  return await axios.get(encodeURI(requestUrl), config())
     .then(response => response.data)
     .catch(() => {});
 }
@@ -139,25 +141,25 @@ export async function GetAggregatedData(
   if (sampleDuration) requestUrl += `&sampleDuration=${sampleDuration}`;
   if (sampleCount) requestUrl += `&sampleCount=${sampleCount}`;
 
-  return await axios.get(encodeURI(requestUrl), config)
+  return await axios.get(encodeURI(requestUrl), config())
     .then(response => response.data)
     .catch(() => {});
 }
 
 export async function GetSingleData(uuid: string): Promise<SingleData> {
-  return await axios.get(BACKEND_API_URL + `/data/${uuid}`, config)
+  return await axios.get(BACKEND_API_URL + `/data/${uuid}`, config())
     .then(response => response.data)
     .catch(() => {});
 }
 
 export async function GetNodes(): Promise<Node[]> {
-  return await axios.get(BACKEND_API_URL + "/mesh-nodes", config)
+  return await axios.get(BACKEND_API_URL + "/mesh-nodes", config())
     .then(response => response.data)
     .catch(() => []);
 }
 
 export async function GetAreas(): Promise<Area[]> {
-  return await axios.get(BACKEND_API_URL + "/areas", config)
+  return await axios.get(BACKEND_API_URL + "/areas", config())
     .then(response => response.data)
     .catch(() => []);
 }

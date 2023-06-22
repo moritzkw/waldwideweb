@@ -116,13 +116,13 @@ export default createStore({
     },
     updateUser(
       state: State,
-      update: { user: User; username: string; password: string; roleId: number }
+      update: { user: User, username: string, roleId: number, password?: string }
     ) {
       UpdateUser(
         update.user,
         update.username,
+        update.roleId,
         update.password,
-        update.roleId
       ).then(() => GetUsers().then((users) => (state.users = users)));
     },
     async fetchChartData(

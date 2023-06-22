@@ -76,12 +76,17 @@ export async function AddUser(username: string, password: string, roleId: number
     .catch(() => false);
 }
 
-export async function UpdateUser(user: User, username: string, password: string, roleId: number): Promise<boolean> {
-  return await axios.put(BACKEND_API_URL + `/accounts/users/${user.id}`, {
+export async function UpdateUser(user: User, username: string, roleId: number, password?: string): Promise<boolean> {
+  const params = password ? {
     username: username,
     password: password,
     roleId: roleId
-  }, config)
+  } : {
+    username: username,
+    roleId: roleId
+  }
+
+  return await axios.put(BACKEND_API_URL + `/accounts/users/${user.id}`, params, config)
     .then(response => response.status === 200)
     .catch(() => false);
 }

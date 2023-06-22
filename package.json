@@ -9,6 +9,7 @@
     "preview": "vite preview"
   },
   "dependencies": {
+    "@ionic/vue": "^7.1.0",
     "@mdi/font": "5.9.55",
     "axios": "^1.4.0",
     "roboto-fontface": "*",

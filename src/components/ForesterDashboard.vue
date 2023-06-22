@@ -107,6 +107,7 @@ export default defineComponent({
           <v-container>
             <GoogleMap api-key="AIzaSyBiaS391syegtj4i98-M0E7ylzmItDTDsc" style="height: 300px" :center="center" :zoom="15">
               <Marker :options="{ position: center }" />
+              <Marker :options="{ position: center }" />
             </GoogleMap>
           </v-container>
         </v-card>

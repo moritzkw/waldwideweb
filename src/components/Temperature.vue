@@ -1,6 +1,8 @@
 <script lang="ts">
 import { defineComponent } from "vue";
 import { GChart } from "vue-google-charts";
+import { ref } from 'vue';
+import Chart from 'chart.js/auto';
 
 export default defineComponent({
   components: { GChart },
@@ -41,6 +43,40 @@ export default defineComponent({
       },
     };
   },
+  mounted() {
+
+    var currentDate = new Date(); // Get the current date and time
+    var sevenDaysAgo = new Date(currentDate.getTime() - 7 * 24 * 60 * 60 * 1000);
+
+    this.store.commit("fetchChartData", {type: this.store.state.data.types[0], measuredStart: sevenDaysAgo, measuredEnd: currentDate});
+
+    const ctx = document.getElementById('lineChart');
+
+    const lineChart = new Chart(ctx, {
+    type: 'line',
+    forestAreas: ["Wald A", "Wald B", "Wald C", "Wald D", "Wald E"],
+    data: {
+      labels: ["Donnerstag", "Freitag", "Samstag", "Sonntag", "Montag", "Dienstag", "Mittwoch"],
+      datasets: [{
+        label: "Besucher",
+            data: [83, 147, 154, 169, 65, 49, 2],
+            backgroundColor: "rgba(46, 125, 50, 0.2)",
+            borderColor: "rgba(46, 125, 50, 1)",
+            borderWidth: 1,
+            pointStyle: "circle",
+            pointRadius: 2,
+      }]
+    },
+    options: {
+      scales: {
+        y: {
+          beginAtZero: true
+        }
+      }
+    }
+  });
+  lineChart;
+  },
   computed: {
     store() {
       return this.$store;
@@ -66,8 +102,10 @@ export default defineComponent({
       // this.tab = week[6];
       return week;
     },
+
   },
 });
+
 </script>
 
 <template>
@@ -114,11 +152,7 @@ export default defineComponent({
                   </div>
                 </v-col>
                 <v-col>
-                  <GChart
-                    type="LineChart"
-                    :data="chartData"
-                    :options="chartOptions"
-                  />
+                  <canvas id="lineChart" width="200" height="200"></canvas>
                 </v-col>
               </v-row>
             </v-container>

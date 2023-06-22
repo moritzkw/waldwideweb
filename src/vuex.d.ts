@@ -7,13 +7,12 @@ declare module "@vue/runtime-core" {
   interface State {
     temperature: {
       latest?: Measurement
-      lastWeekHistory: Array<number>;
+      lastWeekHistory: Array<Measurement>;
     };
     humidity: {
       latest?: Measurement;
-      lastWeekHistory: Array<number>;
+      lastWeekHistory: Array<Measurement>;
     };
-
 
     user: {
       loggedIn: boolean;

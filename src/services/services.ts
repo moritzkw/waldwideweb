@@ -108,8 +108,8 @@ export async function GetData(
   if (meshNodes)
     meshNodes.forEach((meshNode) => (requestUrl += `&meshNodes=${meshNode}`));
   if (measuredStart)
-    requestUrl += `&measuredStart=${measuredStart.toUTCString()}`;
-  if (measuredEnd) requestUrl += `&measuredEnd=${measuredEnd.toUTCString()}`;
+    requestUrl += `&measuredStart=${measuredStart.toISOString()}`;
+  if (measuredEnd) requestUrl += `&measuredEnd=${measuredEnd.toISOString()}`;
 
   return await axios.get(encodeURI(requestUrl), config)
     .then(response => response.data)
@@ -129,8 +129,8 @@ export async function GetAggregatedData(
   if (meshNodes)
     meshNodes.forEach((meshNode) => (requestUrl += `&meshNodes=${meshNode}`));
   if (measuredStart)
-    requestUrl += `&measuredStart=${measuredStart.toUTCString()}`;
-  if (measuredEnd) requestUrl += `&measuredEnd=${measuredEnd.toUTCString()}`;
+    requestUrl += `&measuredStart=${measuredStart.toISOString()}`;
+  if (measuredEnd) requestUrl += `&measuredEnd=${measuredEnd.toISOString()}`;
   if (sampleDuration) requestUrl += `&sampleDuration=${sampleDuration}`;
   if (sampleCount) requestUrl += `&sampleCount=${sampleCount}`;
 

@@ -37,7 +37,7 @@ export default defineComponent({
 
 <template>
   <v-row justify="center">
-    <v-dialog v-model="$store.state.user.loggingIn" max-width="600px">
+    <v-dialog v-model="$store.state.user.loginDialogOpen" max-width="600px">
       <template v-slot:activator="{ props }">
         <v-btn
           :icon="$store.state.user.loggedIn ? 'mdi-logout' : 'mdi-login'"

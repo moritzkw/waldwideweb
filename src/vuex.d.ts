@@ -20,9 +20,8 @@ declare module "@vue/runtime-core" {
 
     user: {
       loggedIn: boolean;
-      loggingIn: boolean;
-      loggingOut: boolean;
-      roles: string;
+      loginDialogOpen: boolean;
+      role: string;
     };
     selectedArea: string;
     nodes: Node[];

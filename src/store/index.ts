@@ -19,24 +19,23 @@ import { Data } from "../types/data";
 import { User } from "../types/user";
 
 export default createStore({
-  state() {
+  state(): State {
     return {
       temperature: {
         latest: null,
-        lastWeekHistory: null,
+        lastWeekHistory: [],
         todaysMin: null,
         todaysMax: null,
       },
       humidity: {
         latest: null,
-        lastWeekHistory: null,
+        lastWeekHistory: [],
         todaysMin: null,
         todaysMax: null,
       },
       user: {
         loggedIn: false,
-        loggingIn: false,
-        loggingOut: false,
+        loginDialogOpen: false,
         role: "visitor",
       },
       selectedArea: "",
@@ -86,15 +85,15 @@ export default createStore({
       });
     },
     startLogin(state: State) {
-      state.user.loggingIn = true;
+      state.user.loginDialogOpen = true;
     },
     cancelLogin(state: State) {
-      state.user.loggingIn = false;
+      state.user.loginDialogOpen = false;
     },
     login(state: State, data: { username: string; password: string }) {
       login(data.username, data.password).then((response) => {
         state.user.loggedIn = response.status === 200;
-        state.user.loggingIn = response.status !== 200;
+        state.user.loginDialogOpen = response.status !== 200;
         if (response.status === 200 && response.data) {
           // $cookie.set("token", response.data.token, response.data.expiresAt)
         }
@@ -102,7 +101,7 @@ export default createStore({
     },
     logout(state: State) {
       logout().then((loggedOut) => {
-        state.user.loggingOut = !loggedOut;
+        state.user.loginDialogOpen = !loggedOut;
         state.user.loggedIn = !loggedOut;
       });
     },

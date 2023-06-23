@@ -12,7 +12,7 @@ import Chart from 'chart.js/auto';
 
 // Logo
 
-export default ({
+export default defineComponent({
   components: { Weather, GChart, Temperature },
   name: "VisitorDashboard",
 
@@ -59,6 +59,38 @@ export default ({
       (nodes: Node[], node: Node) => nodes.concat(node.uuid),
       [] as Node[]
     );
+
+
+    var currentDate = new Date(); // Get the current date and time
+      var sevenDaysAgo = new Date(currentDate.getTime() - 7 * 24 * 60 * 60 * 1000);
+
+      this.store.commit("fetchChartData", {type: this.store.state.data.types[0], measuredStart: sevenDaysAgo, measuredEnd: currentDate});
+
+      const ctx = document.getElementById('lineChartVisitor');
+
+      const lineChart = new Chart(ctx, {
+      type: 'line',
+      forestAreas: ["Wald A", "Wald B", "Wald C", "Wald D", "Wald E"],
+      data: {
+        labels: ["Donnerstag", "Freitag", "Samstag", "Sonntag", "Montag", "Dienstag", "Mittwoch"],
+        datasets: [{
+          label: "Besucher",
+              data: [83, 147, 154, 169, 65, 49, 2],
+              backgroundColor: "rgba(46, 125, 50, 0.2)",
+              borderColor: "rgba(46, 125, 50, 1)",
+              borderWidth: 1,
+              pointStyle: "circle",
+              pointRadius: 2,
+        }]
+      },
+      options: {
+        scales: {
+          y: {
+            beginAtZero: true
+          }
+        }
+      }});
+      lineChart;
   },
   computed: {
     store() {
@@ -92,7 +124,20 @@ export default ({
           <v-container fluid>
             <v-row justify="space-between">
               <v-col>
-                <Temperature></Temperature>
+                
+                <v-card class="card" title="Temperatur" :elevation="0">
+                  <div class="d-flex align-center">
+                    <v-icon
+                      icon="mdi-white-balance-sunny"
+                      color="yellow"
+                      size="x-large"
+                    />
+                    <div class="text-h2 ml-4">
+                      {{ store.state.temperature.latest ? store.state.temperature.latest.value : "-" }}°C
+                    </div>
+                  </div>
+                  <Temperature></Temperature>
+                </v-card>
               </v-col>
               <v-col>
                 <v-card class="card" title="Luftfeuchtigkeit" elevation="0">

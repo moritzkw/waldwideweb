@@ -3,11 +3,13 @@ import { defineComponent } from "vue";
 import { GChart } from "vue-google-charts";
 import { ref } from 'vue';
 import Chart from 'chart.js/auto';
+import HistoryChart from "./HistoryChart.vue";
 
 export default defineComponent({
-  components: { GChart },
+  components: { HistoryChart },
   data() {
     return {
+      chartRef: ref(null),
       dialogOpen: false,
       weekDays: this.fillWeekDays(),
       tab: null,
@@ -43,39 +45,16 @@ export default defineComponent({
       },
     };
   },
-  mounted() {
+  watch: {
+    dialogOpen(dialogOpen: boolean) {
+      if (!dialogOpen) return;
 
-    var currentDate = new Date(); // Get the current date and time
-    var sevenDaysAgo = new Date(currentDate.getTime() - 7 * 24 * 60 * 60 * 1000);
+      console.debug("uzehrciuwenciojw")
+      var currentDate = new Date(); // Get the current date and time
+      var sevenDaysAgo = new Date(currentDate.getTime() - 7 * 24 * 60 * 60 * 1000);
 
-    this.store.commit("fetchChartData", {type: this.store.state.data.types[0], measuredStart: sevenDaysAgo, measuredEnd: currentDate});
-
-    const ctx = document.getElementById('lineChart');
-
-    const lineChart = new Chart(ctx, {
-    type: 'line',
-    forestAreas: ["Wald A", "Wald B", "Wald C", "Wald D", "Wald E"],
-    data: {
-      labels: ["Donnerstag", "Freitag", "Samstag", "Sonntag", "Montag", "Dienstag", "Mittwoch"],
-      datasets: [{
-        label: "Besucher",
-            data: [83, 147, 154, 169, 65, 49, 2],
-            backgroundColor: "rgba(46, 125, 50, 0.2)",
-            borderColor: "rgba(46, 125, 50, 1)",
-            borderWidth: 1,
-            pointStyle: "circle",
-            pointRadius: 2,
-      }]
-    },
-    options: {
-      scales: {
-        y: {
-          beginAtZero: true
-        }
-      }
+      this.store.commit("fetchChartData", {type: this.store.state.data.types[0], measuredStart: sevenDaysAgo, measuredEnd: currentDate});
     }
-  });
-  lineChart;
   },
   computed: {
     store() {
@@ -109,27 +88,9 @@ export default defineComponent({
 </script>
 
 <template>
-  <v-dialog v-model="dialogOpen" max-width="800px">
-    <template v-slot:activator="{ props }">
-      <v-card class="card" title="Temperatur" :elevation="0" v-bind="props">
-        <div class="d-flex align-center">
-          <v-icon
-            icon="mdi-white-balance-sunny"
-            color="yellow"
-            size="x-large"
-          />
-          <div class="text-h2 ml-4">
-            {{ store.state.temperature.latest ? store.state.temperature.latest.value : "-" }}°C
-          </div>
-        </div>
-      </v-card>
-    </template>
-
+  <v-dialog v-model="dialogOpen" activator="parent" max-width="800px">
     <v-card title="Temperatur">
       <v-tabs v-model="tab" align-tabs="center" center-active show-arrows>
-        <!-- <v-tab value="one">Item One</v-tab>
-        <v-tab value="two">Item Two</v-tab>
-        <v-tab value="three">Item Three</v-tab> -->
         <v-tab v-for="day in weekDays" :value="day">{{ day }}</v-tab>
       </v-tabs>
       <v-card>
@@ -152,7 +113,7 @@ export default defineComponent({
                   </div>
                 </v-col>
                 <v-col>
-                  <canvas id="lineChart" width="200" height="200"></canvas>
+                  <history-chart :data="store.state.temperature.lastWeekHistory"></history-chart>
                 </v-col>
               </v-row>
             </v-container>

@@ -130,17 +130,23 @@ export default createStore({
         update.roleId
       ).then(() => GetUsers().then((users) => (state.users = users)));
     },
-    async fetchChartData(state: State, data: {type: String, measuredStart: Date, measuredEnd: Date,}){
-      
+    async fetchChartData(
+      state: State,
+      data: { type: String; measuredStart: Date; measuredEnd: Date }
+    ) {
       await GetTypes().then((types) => (state.data.types = types));
-      console.log(state.selectedArea);  
-      GetData(state.data.types[0], undefined, data.measuredStart, data.measuredEnd).then((data) => {
-
+      
+      GetData(
+        state.data.types[0],
+        undefined,
+        data.measuredStart,
+        data.measuredEnd
+      ).then((data) => {
         state.temperature.lastWeekHistory = data
           ? (data as Data).data[0].measurements
           : [];
-      })
-      },
+      });
+    },
     deleteUser(state: State, user: User) {
       DeleteUser(user).then(() =>
         GetUsers().then((users) => (state.users = users))

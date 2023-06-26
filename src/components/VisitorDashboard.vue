@@ -78,9 +78,6 @@ export default defineComponent({
               data: [83, 147, 154, 169, 65, 49, 2],
               backgroundColor: "rgba(46, 125, 50, 0.2)",
               borderColor: "rgba(46, 125, 50, 1)",
-              borderWidth: 1,
-              pointStyle: "circle",
-              pointRadius: 2,
         }]
       },
       options: {

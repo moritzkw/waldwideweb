@@ -33,6 +33,15 @@ export default defineComponent({
     return {
       chartOptions: {
         responsive: true,
+        style: {
+          dataset: {
+            backgroundColor: "rgba(46, 125, 50, 0.2)",
+            borderColor: "rgba(46, 125, 50, 1)",
+            borderWidth: 1,
+            pointStyle: "circle",
+            pointRadius: 2,
+          },
+        },
       },
     };
   },
@@ -40,7 +49,12 @@ export default defineComponent({
     chartData() {
       return {
         labels: ["0 Uhr", "6 Uhr", "12 Uhr", "18 Uhr"],
-        datasets: [{ data: [17, 18, 22, 24] }],
+        datasets: [
+          {
+            data: [17, 21, 22, 16],
+            borderColor: "rgba(46, 125, 50, 1)",
+          },
+        ],
       }
     },
   }
@@ -48,5 +62,7 @@ export default defineComponent({
 </script>
 
 <template>
-  <Line id="my-chart-id" :options="chartOptions" :data="chartData" />
+  <v-card>
+    <Line id="my-chart-id" :options="chartOptions" :data="chartData" />
+  </v-card>
 </template>

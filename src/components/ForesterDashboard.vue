@@ -3,7 +3,7 @@ import { defineComponent } from "vue";
 import Weather from "./Weather.vue";
 import Temperature from "./Temperature.vue";
 import { GChart } from "vue-google-charts";
-import { GoogleMap, Marker, InfoWindow } from "vue3-google-map";
+import { GoogleMap, Marker, InfoWindow} from "vue3-google-map";
 
 export default defineComponent({
   components: { Weather, GChart, Temperature, GoogleMap, Marker, InfoWindow },
@@ -11,6 +11,7 @@ export default defineComponent({
 
   data() {
     return {
+      draggableNodes: {} as { [key: string]: boolean }, // Neue Datenstruktur zum Speichern des Verschiebungsstatus der Nodes
       center: { lat: 49.121945, lng: 9.211429 },
       // Array will be automatically processed with visualization.arrayToDataTable function
       forestAreas: ["Wald A", "Wald B", "Wald C", "Wald D", "Wald E"],
@@ -78,6 +79,7 @@ export default defineComponent({
       const markerOptions = {
         position: { lat: latitude, lng: longitude },
         isHovered: this.isNodeHovered(node),
+        draggable: this.isNodeDraggable(node)
       };
 
       return markerOptions;
@@ -97,12 +99,34 @@ export default defineComponent({
       // Führe hier die gewünschte Logik aus, wenn auf ein Node geklickt wird
       console.log('Node clicked:', node);
 
-      
+
     },
 
     handleNodeHover(node: any) {
       // Setze den gehoverten Node im Zustand der Komponente
       this.hoveredNode = node;
+    },
+
+    isNodeDraggable(node: any) {
+      return this.draggableNodes[node.uuid] || false;
+    },
+
+    handlePositionEdit(node: any) {
+      this.draggableNodes[node.uuid] = true;
+    },
+
+    handleDragEnd(node: any) {
+      const position = node.position;
+
+      // Aktualisiere den Standort des Nodes
+      node.latitude = position.lat();
+      node.longitude = position.lng();
+
+      // Setze den Verschiebungsstatus auf nicht verschiebbar
+      this.draggableNodes[node.uuid] = false;
+
+      // Führe hier die Logik aus, um den aktualisierten Standort zu speichern oder zu übermitteln
+      console.log('Node position updated:', node);
     },
   },
 
@@ -162,17 +186,24 @@ export default defineComponent({
               :zoom="15">
 
               <!-- Iteriere über die Nodes und erstelle Marker -->
-              <Marker v-for="node in store.state.nodes" :key="node.id" :options="getMarkerOptions(node)"
-                @click="handleNodeClick(node)" @mouseover="handleNodeHover(node)" @mouseout="clearHoveredNode">
-                <InfoWindow  :options="infoWindowOptions">
+              <Marker v-for="node in store.state.nodes" :key="node.uuid" :options="getMarkerOptions(node)"
+                @click="handleNodeClick(node)" @mouseover="handleNodeHover(node)" @mouseout="clearHoveredNode"
+                
+                >
+                <InfoWindow :options="infoWindowOptions">
                   <div>
                     <p><strong>Erstellt:</strong> {{ new Date(node.createdAt).toLocaleString() }}</p>
                     <p><strong>Längengrad:</strong> {{ node.latitude }}</p>
                     <p><strong>Breitengrad:</strong> {{ node.longitude }}</p>
-                    <p><strong>UUID:</strong> {{ node.uuid }}</p>
-                    <v-btn>Position bearbeiten</v-btn>
+                    <p><strong>UUID:</strong> {{ node.uuid }}</p><br>
+                    <div class="text-center">
+                      <v-btn variant="tonal" size="small" block rounded="xl" @click="handlePositionEdit(node)">
+                        Position bearbeiten
+                      </v-btn>
+                    </div>
                   </div>
-                </InfoWindow> </Marker>
+                </InfoWindow>
+              </Marker>
 
             </GoogleMap>
           </v-container>

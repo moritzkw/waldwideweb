@@ -129,16 +129,12 @@ export default defineComponent({
               <v-col>
                 <v-card class="card" title="Luftfeuchtigkeit" elevation="0">
                   <div class="d-flex align-center">
-                    <v-icon
-                      icon="mdi-water-outline"
-                      color="blue"
-                      size="x-large"
-                    />
+                    <v-icon icon="mdi-water-outline" color="blue" size="x-large" />
                     <div class="text-h2 ml-4">
                       {{
                         store.state.humidity.latest
-                          ? store.state.humidity.latest.value
-                          : "-"
+                        ? store.state.humidity.latest.value
+                        : "-"
                       }}%
                     </div>
                   </div>
@@ -147,11 +143,7 @@ export default defineComponent({
               <v-col>
                 <v-card class="card" title="Wind" elevation="0">
                   <div class="d-flex align-center">
-                    <v-icon
-                      icon="mdi-weather-windy"
-                      color="grey"
-                      size="x-large"
-                    />
+                    <v-icon icon="mdi-weather-windy" color="grey" size="x-large" />
                     <div class="text-h2 ml-4">{{ "-" }} km/h</div>
                   </div>
                 </v-card>
@@ -165,20 +157,19 @@ export default defineComponent({
       <v-col>
         <v-card class="card" title="Sensoren" :elevation="5">
           <v-container>
-            <GoogleMap
-              api-key="AIzaSyBiaS391syegtj4i98-M0E7ylzmItDTDsc"
-              style="height: 500px"
-              :center="center"
-              :zoom="14"
-            >
-              <Marker
-                v-for="node in store.state.nodes"
-                :key="node.uuid"
-                :options="getMarkerOptions(node)"
-                @dragend="handleDragEnd"
-              >
+            <GoogleMap api-key="AIzaSyBiaS391syegtj4i98-M0E7ylzmItDTDsc" style="height: 500px" :center="center"
+              :zoom="14">
+              <Marker v-for="node in store.state.nodes" :key="node.uuid" :options="getMarkerOptions(node)"
+                @dragend="handleDragEnd">
                 <InfoWindow :options="infoWindowOptions">
                   <div>
+                    <p>
+                    <div>
+                      <h3 v-bind:title="node.uuid">GerätId:</h3>
+                      <p>{{ node.uuid }}</p>
+                    </div>
+                    </p>
+                    <br />
                     <p>
                       <strong>Erstellt:</strong>
                       {{ new Date(node.createdAt).toLocaleString() }}
@@ -189,20 +180,13 @@ export default defineComponent({
                     </p>
                     <p><strong>Längengrad:</strong> {{ node.latitude }}</p>
                     <p><strong>Breitengrad:</strong> {{ node.longitude }}</p>
-                    <p><strong>UUID:</strong> {{ node.uuid }}</p>
                     <br />
                     <div class="text-center">
-                      <v-btn
-                        variant="tonal"
-                        size="small"
-                        block
-                        rounded="xl"
-                        @click="handlePositionButtonClick(node)"
-                      >
+                      <v-btn variant="tonal" size="small" block rounded="xl" @click="handlePositionButtonClick(node)">
                         {{
                           editingNode === node
-                            ? "Position Speichern"
-                            : "Position bearbeiten"
+                          ? "Position Speichern"
+                          : "Position bearbeiten"
                         }}
                       </v-btn>
                     </div>
@@ -228,11 +212,7 @@ export default defineComponent({
                 </div>
               </v-col>
               <v-col>
-                <GChart
-                  type="LineChart"
-                  :data="chartData"
-                  :options="chartOptions"
-                />
+                <GChart type="LineChart" :data="chartData" :options="chartOptions" />
               </v-col>
             </v-row>
           </v-container>
@@ -244,11 +224,7 @@ export default defineComponent({
             Wählen Sie das Waldgebiet aus, für das Sie die aktuellen Messwerte
             anzeigen wollen.
           </p>
-          <v-combobox
-            class="px-6"
-            label="Waldgebiet auswählen"
-            :items="forestAreas"
-          ></v-combobox>
+          <v-combobox class="px-6" label="Waldgebiet auswählen" :items="forestAreas"></v-combobox>
         </v-card>
         <!-- <weather></weather> -->
       </v-col>

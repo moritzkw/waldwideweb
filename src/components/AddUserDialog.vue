@@ -2,6 +2,7 @@
 import { State, defineComponent } from 'vue';
 import { Store } from 'vuex/types/index.js';
 import { Role } from '../types/role';
+import { SubmitEventPromise } from 'vuetify/lib/index.js';
 
 export default defineComponent({
   data() {
@@ -11,6 +12,30 @@ export default defineComponent({
       password: "",
       passwordRepeat: "",
       role: "",
+      usernameRules: [
+        value => {
+          if (value?.length > 3) return true;
+          return 'Der Nutzername muss mindestens 4 Zeichen lang sein.';
+        },
+      ],
+      passwordRules: [
+        value => {
+          if (value?.length > 3) return true;
+          return 'Das Passwort muss mindstens 4 Zeichen lang sein.';
+        },
+      ],
+      passwordRepeatRules: [
+        value => {
+          if (value === this.password) return true;
+          return 'Die Passwörter stimmen nicht überein.';
+        },
+      ],
+      roleRules: [
+        value => {
+          if (value) return true;
+          return 'Bitte wähle eine Nutzerrolle aus.';
+        },
+      ],
     };
   },
   computed: {
@@ -29,17 +54,16 @@ export default defineComponent({
     }
   },
   methods: {
-    CheckPasswordRepeat(): boolean {
-      if (this.password === this.passwordRepeat) return true;
-      return false;
-    },
-    AddUser() {
-      if (this.CheckPasswordRepeat())
+    async AddUser(event: SubmitEventPromise) {
+      const result = await event;
+      if (!result.valid) return;
+
       this.store.commit("addUser", {
         username: this.username,
         password: this.password,
         roleId: this.store.state.roles.find<Role>((role: Role) => role.name === this.role)!.id
       })
+
       this.dialogOpen = false;
     },
     CancelAddUser() {
@@ -64,42 +88,46 @@ export default defineComponent({
         </v-card-title>
         <v-card-text :v-show="!$store.state.user.loggedIn">
           <v-container>
-            <v-col>
+            <v-form @submit.prevent="AddUser">
               <v-text-field
                 v-model="username"
                 label="Nutzername"
+                :rules="usernameRules"
                 required
               ></v-text-field>
               <v-text-field
                 v-model="password"
                 label="Passwort"
                 type="password"
+                :rules="passwordRules"
                 required
               ></v-text-field>
               <v-text-field
                 v-model="passwordRepeat"
                 label="Passwort wiederholen"
                 type="password"
+                :rules="passwordRepeatRules"
                 required
               ></v-text-field>
-              <v-combobox
+              <v-select
                 v-model="role"
                 label="Nutzerrolle"
                 :items="roles"
+                :rules="roleRules"
                 required
-              ></v-combobox>
-            </v-col>
+              ></v-select>
+              <v-card-actions>
+                <v-spacer></v-spacer>
+                <v-btn color="blue-darken-1" variant="text" @click="CancelAddUser">
+                  Abbrechen
+                </v-btn>
+                <v-btn type="submit" color="blue-darken-1" variant="text">
+                  Erstellen
+                </v-btn>
+              </v-card-actions>
+            </v-form>
           </v-container>
         </v-card-text>
-        <v-card-actions>
-          <v-spacer></v-spacer>
-          <v-btn color="blue-darken-1" variant="text" @click="CancelAddUser">
-            Abbrechen
-          </v-btn>
-          <v-btn color="blue-darken-1" variant="text" @click="AddUser">
-            Erstellen
-          </v-btn>
-        </v-card-actions>
       </v-card>
     </v-dialog>
   </v-btn>

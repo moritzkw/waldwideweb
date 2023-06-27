@@ -16,13 +16,9 @@ export default defineComponent({
   methods: {
     async Login(username: string, password: string) {
       this.$store.commit("login", {username, password});
-
-      this.router.push({ path: "/admin" });
     },
     Logout() {
-      this.dialogOpen = false;
       this.$store.commit("logout");
-      this.router.push({ path: "/" });
     },
     HandleDialogAction() {
       if (this.$store.state.user.loggedIn) this.Logout();
@@ -37,7 +33,7 @@ export default defineComponent({
 
 <template>
   <v-row justify="center">
-    <v-dialog v-model="$store.state.user.loggingIn" max-width="600px">
+    <v-dialog v-model="$store.state.user.loginDialogOpen" max-width="600px">
       <template v-slot:activator="{ props }">
         <v-btn
           :icon="$store.state.user.loggedIn ? 'mdi-logout' : 'mdi-login'"

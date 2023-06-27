@@ -107,8 +107,7 @@ export default defineComponent({
   },
 
   mounted() {
-    console.debug(this.store.state
-    )
+    this.store.commit("fetchForForester");
   },
   computed: {
     store() {

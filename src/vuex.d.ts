@@ -2,6 +2,7 @@ import { Store } from "vuex";
 import { Role } from "./types/role";
 import { Measurement } from "./types/data";
 import { Area } from "./types/area";
+import { Update } from "./types/update";
 
 declare module "@vue/runtime-core" {
   interface State {
@@ -20,18 +21,20 @@ declare module "@vue/runtime-core" {
 
     user: {
       loggedIn: boolean;
-      loggingIn: boolean;
-      loggingOut: boolean;
-      roles: string;
+      sessionExpired: boolean;
+      loginDialogOpen: boolean;
+      role: string;
     };
     selectedArea: string;
-    nodes: Node[];
-    areas: Area[];
-    users: User[];
+    nodes: Array<Node>;
+    areas: Array<Area>;
+    users: Array<User>;
+    usersLastUpdated: Date;
     data: {
-      types: string[];
+      types: Array<string>;
     };
-    roles: Role[]
+    roles: Role[],
+    updates: Array<Update>
   }
 
   interface ComponentCustomProperties {

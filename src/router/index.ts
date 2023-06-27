@@ -1,13 +1,11 @@
 import { createRouter, createWebHistory } from 'vue-router'
-import AppVue from '../App.vue'
-import VisitorDashboardVue from '../components/VisitorDashboard.vue'
 
 export default createRouter({
   history: createWebHistory(),
   routes: [
     {
       path: '/',
-      component: VisitorDashboardVue,
+      component: () => import('../components/VisitorDashboard.vue'),
     },
     {
       path: '/admin',

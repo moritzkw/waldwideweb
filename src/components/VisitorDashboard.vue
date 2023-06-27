@@ -45,6 +45,7 @@ export default defineComponent({
     };
   },
   mounted() {
+    this.store.commit("fetchForVisitor");
     this.forestAreas = (store as Store<State>).state.nodes.reduce(
       (nodes: Node[], node: Node) => nodes.concat(node.uuid),
       [] as Node[]
@@ -81,11 +82,11 @@ export default defineComponent({
     store() {
       return this.$store;
     },
-    nodes() {
+    areas() {
       if (store.state.areas) {
-        return (store as Store<State>).state.nodes.reduce(
-          (nodes: Node[], node: Node) => nodes.concat(node.uuid),
-          [] as Node[]
+        return (store as Store<State>).state.areas.reduce(
+          (areas: Area[], area: Area) => areas.concat(area.areaId),
+          [] as Area[]
         );
         // return (store.state.areas as Area[]).reduce((areas: string[], area: Area) => areas.concat(area.areaId.toString()), [] as string[]);
       } else {
@@ -102,6 +103,14 @@ export default defineComponent({
 </script>
 
 <template>
+  <v-alert
+    v-model="store.state.sessionExpired"
+    text="Ihre letzte Sitzung ist abgelaufen. Bitte melden Sie sich erneut an."
+    type="warning"
+    variant="tonal"
+    closable
+    @click="store.state.sessionExpired = false"
+  ></v-alert>
   <v-container>
     <v-row>
       <v-col>
@@ -180,13 +189,13 @@ export default defineComponent({
           <p class="pa-6">
             Wählen Sie das Waldgebiet aus, für das Sie die aktuellen Messwerte anzeigen wollen.
           </p>
-          <v-combobox
+          <v-select
             v-model="store.state.selectedArea"
             class="px-6"
             label="Waldgebiet auswählen"
-            :items="nodes"
+            :items="areas"
             @update:modelValue="updateData"
-          ></v-combobox>
+          ></v-select>
         </v-card>
       </v-col>
     </v-row>

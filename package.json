@@ -9,12 +9,14 @@
     "preview": "vite preview"
   },
   "dependencies": {
+    "@ionic/vue": "^7.1.0",
     "@mdi/font": "5.9.55",
     "axios": "^1.4.0",
     "roboto-fontface": "*",
     "vue": "^3.2.47",
     "vue-google-charts": "^1.1.0",
     "vue-router": "^4.2.0",
+    "vue3-google-map": "^0.15.0",
     "vuetify": "^3.2.2",
     "vuex": "^4.0.2",
     "webfontloader": "^1.0.0"

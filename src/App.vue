@@ -19,6 +19,7 @@
 <script lang="ts">
 import { defineComponent } from "vue";
 import VisitorDashboard from "./components/VisitorDashboard.vue";
+import ForesterDashboard from "./components/ForesterDashboard.vue";
 import LoginDialog from "./components/LoginDialog.vue";
 
 export default defineComponent({
@@ -26,7 +27,8 @@ export default defineComponent({
 
   components: {
     VisitorDashboard,
-    LoginDialog
+    LoginDialog,
+    ForesterDashboard
   },
 
   data() {

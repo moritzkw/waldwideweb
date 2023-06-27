@@ -8,6 +8,7 @@ import { Area } from "../types/area";
 import { User } from "../types/user";
 import { Update } from "../types/update";
 import { Me } from "../types/me";
+import { Node } from "../types/node";
 
 const BACKEND_API_URL = "https://backend.mdma.haveachin.de";
 function config() {
@@ -188,4 +189,13 @@ export async function GetMe(): Promise<Me> {
   return await axios.get(BACKEND_API_URL + "/me", config())
     .then(response => response.data)
     .catch(() => {});
+}
+
+export async function UpdateNode(node: Node, latitude: number, longitude: number): Promise<boolean> {
+  return await axios.put(BACKEND_API_URL + `/mesh-nodes/${node.uuid}`, {
+    latitude: latitude,
+    longitude: longitude
+  }, config())
+    .then(response => response.status === 200)
+    .catch(() => false);
 }

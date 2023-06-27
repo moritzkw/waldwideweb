@@ -12,6 +12,7 @@ import {
   GetUpdates,
   GetUsers,
   PostUpdate,
+  UpdateNode,
   UpdateUser,
   login,
   logout,
@@ -24,6 +25,7 @@ import { Area } from "../types/area";
 import { Update } from "../types/update";
 import { Role } from "../types/role";
 import router from "../router";
+import { Node } from "../types/node";
 
 export default createStore({
   state(): State {
@@ -265,6 +267,11 @@ export default createStore({
     },
     postUpdate(state: State, update: { data: string, version: string }) {
       PostUpdate(update.data, update.version).then(() => GetUpdates().then((updates) => state.updates = updates));
+    },
+    updateNode(state: State, data: {node: Node, latitude: number, longitude: number}) {
+      UpdateNode(data.node, data.latitude, data.longitude).then(() => {
+        GetNodes().then(nodes => state.nodes = nodes);
+      })
     }
   },
 });

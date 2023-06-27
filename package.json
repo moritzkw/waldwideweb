@@ -12,8 +12,10 @@
     "@ionic/vue": "^7.1.0",
     "@mdi/font": "5.9.55",
     "axios": "^1.4.0",
+    "chart.js": "^4.3.0",
     "roboto-fontface": "*",
     "vue": "^3.2.47",
+    "vue-chartjs": "^5.2.0",
     "vue-google-charts": "^1.1.0",
     "vue-router": "^4.2.0",
     "vue3-google-map": "^0.15.0",
@@ -22,6 +24,7 @@
     "webfontloader": "^1.0.0"
   },
   "devDependencies": {
+    "@types/chart.js": "^2.9.37",
     "@types/webfontloader": "^1.0.0",
     "@vitejs/plugin-vue": "^4.1.0",
     "typescript": "^5.0.2",

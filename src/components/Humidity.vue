@@ -14,7 +14,7 @@ export default defineComponent({
       weekDays: this.fillWeekDays(),
       tab: null,
       chartData: [
-        ["Uhrzeit", "Temperatur"],
+        ["Uhrzeit", "Luftfeuchtigkeit"],
         ["0 Uhr", 4],
         ["6 Uhr", 10],
         ["12 Uhr", 15],
@@ -48,11 +48,10 @@ export default defineComponent({
   watch: {
     dialogOpen(dialogOpen: boolean) {
       if (!dialogOpen) return;
-
-      console.debug("Temperature Dialog clicked...")
+      console.debug("Humidity Dialog clicked...")
       var currentDate = new Date(); // Get the current date and time
       var sevenDaysAgo = new Date(currentDate.getTime() - 7 * 24 * 60 * 60 * 1000);
-      
+
       this.store.commit("fetchChartData", {type: this.store.state.data.types[0], measuredStart: sevenDaysAgo, measuredEnd: currentDate});
     }
   },
@@ -81,6 +80,7 @@ export default defineComponent({
       // this.tab = week[6];
       return week;
     },
+
   },
   mounted(){
     var currentDate = new Date(); // Get the current date and time
@@ -89,15 +89,14 @@ export default defineComponent({
 
     const endOfDay = new Date(currentDate);
     endOfDay.setHours(23, 59, 59, 999);
-    this.store.commit("getTemperatureRange", { type: "temperature", measuredStart: startOfDay, measuredEnd: endOfDay});
+    this.store.commit("getHumidityRange", { type: "humidity", measuredStart: startOfDay, measuredEnd: endOfDay});
   }, 
- }
-);
+});
 </script>
 
 <template>
   <v-dialog v-model="dialogOpen" activator="parent" max-width="800px">
-    <v-card title="Temperatur">
+    <v-card title="Luftfeuchtigkeit">
       <v-tabs v-model="tab" align-tabs="center" center-active show-arrows>
         <v-tab v-for="day in weekDays" :value="day">{{ day }}</v-tab>
       </v-tabs>
@@ -113,15 +112,15 @@ export default defineComponent({
                       color="grey"
                       size="x-large"
                     />
-                    <div class="text-h2">17°C</div>
+                    <div class="text-h2">64%</div>
                     <v-col class="ml-6">
-                      <div class="text-h7">Min: {{ store.state.temperature.todaysMin.toFixed(1) }}°C</div>
-                      <div class="text-h7">Max: {{ store.state.temperature.todaysMax.toFixed(1) }}°C</div>
+                      <div class="text-h7">Min: {{ store.state.humidity.todaysMin.toFixed(1) }}%</div>
+                      <div class="text-h7">Max: {{ store.state.humidity.todaysMax.toFixed(1) }}%</div>
                     </v-col>
                   </div>
                 </v-col>
                 <v-col>
-                  <HistoryChart :data="store.state.temperature.lastWeekHistory"></HistoryChart>
+                  <HistoryChart :data="store.state.humidity.lastWeekHistory"></HistoryChart>
                 </v-col>
               </v-row>
             </v-container>
@@ -131,6 +130,3 @@ export default defineComponent({
     </v-card>
   </v-dialog>
 </template>
-
-<style>
-</style>

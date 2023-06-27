@@ -2,31 +2,24 @@
 import { State, defineComponent } from "vue";
 import Weather from "./Weather.vue";
 import Temperature from "./Temperature.vue";
+import Humidity from "./Humidity.vue";
 import { GChart } from "vue-google-charts";
 import store from "../store/index";
 import { Store } from "vuex/types/index.js";
 import { Area } from "../types/area";
+import { ref } from 'vue';
+import Chart from 'chart.js/auto';
 
 // Logo
-
 export default defineComponent({
-  components: { Weather, GChart, Temperature },
+  components: { Weather, GChart, Temperature, Humidity},
   name: "VisitorDashboard",
 
   data() {
     return {
       // Array will be automatically processed with visualization.arrayToDataTable function
       forestAreas: [] as Node[],
-      chartData: [
-        ["Tag", "Besucher"],
-        ["Donnerstag", 83],
-        ["Freitag", 147],
-        ["Samstag", 154],
-        ["Sonntag", 169],
-        ["Montag", 65],
-        ["Dienstag", 49],
-        ["Mittwoch", 72],
-      ],
+      
       chartOptions: {
         chart: {
           title: "Company Performance",
@@ -56,6 +49,33 @@ export default defineComponent({
       (nodes: Node[], node: Node) => nodes.concat(node.uuid),
       [] as Node[]
     );
+
+    var currentDate = new Date(); // Get the current date and time
+      var sevenDaysAgo = new Date(currentDate.getTime() - 7 * 24 * 60 * 60 * 1000);
+      this.store.commit("fetchChartData", {type: this.store.state.data.types[0], measuredStart: sevenDaysAgo, measuredEnd: currentDate});
+
+      const ctx = document.getElementById('lineChartVisitor');
+
+      const lineChart = new Chart(ctx, {
+      type: 'line',
+      forestAreas: ["Wald A", "Wald B", "Wald C", "Wald D", "Wald E"],
+      data: {
+        labels: ["Donnerstag", "Freitag", "Samstag", "Sonntag", "Montag", "Dienstag", "Mittwoch"],
+        datasets: [{
+          label: "Besucher",
+              data: [83, 147, 154, 169, 65, 49, 2],
+              backgroundColor: "rgba(46, 125, 50, 0.2)",
+              borderColor: "rgba(46, 125, 50, 1)",
+        }]
+      },
+      options: {
+        scales: {
+          y: {
+            beginAtZero: true
+          }
+        }
+      }});
+      lineChart;
   },
   computed: {
     store() {
@@ -89,16 +109,24 @@ export default defineComponent({
           <v-container fluid>
             <v-row justify="space-between">
               <v-col>
-                <Temperature></Temperature>
+                <v-card class="card" title="Temperatur" :elevation="0">
+                  <div class="d-flex align-center">
+                    <v-icon
+                      icon="mdi-white-balance-sunny"
+                      color="yellow"
+                      size="x-large"
+                    />
+                    <div class="text-h2 ml-4">
+                      {{ store.state.temperature.latest ? store.state.temperature.latest.value : "-" }}°C
+                    </div>
+                  </div>
+                  <Temperature></Temperature>
+                </v-card>
               </v-col>
               <v-col>
                 <v-card class="card" title="Luftfeuchtigkeit" elevation="0">
                   <div class="d-flex align-center">
-                    <v-icon
-                      icon="mdi-water-outline"
-                      color="blue"
-                      size="x-large"
-                    />
+                    <v-icon icon="mdi-water-outline" color="blue" size="x-large" />
                     <div class="text-h2 ml-4">
                       {{
                         store.state.humidity.latest
@@ -107,6 +135,7 @@ export default defineComponent({
                       }}%
                     </div>
                   </div>
+                  <Humidity></Humidity>
                 </v-card>
               </v-col>
               <v-col>
@@ -134,17 +163,13 @@ export default defineComponent({
               <v-col>
                 <div class="d-flex align-center">
                   <div class="text-h2">
-                    {{ "-" }}
+                    72<!-- {{ chartData.datasets[0].data[chartData.datasets[0].data.length - 1] }} -->
                   </div>
                   <v-icon icon="mdi-arrow-top-right ml-4" color="green" />
                 </div>
               </v-col>
-              <v-col>
-                <GChart
-                  type="LineChart"
-                  :data="chartData"
-                  :options="chartOptions"
-                />
+              <v-col fluid>
+                <canvas id="lineChartVisitor" width="200" height="200"></canvas>
               </v-col>
             </v-row>
           </v-container>
@@ -153,8 +178,7 @@ export default defineComponent({
       <v-col>
         <v-card class="card" title="Waldgebiet" :elevation="5">
           <p class="pa-6">
-            Wählen Sie das Waldgebiet aus, für das Sie die aktuellen Messwerte
-            anzeigen wollen.
+            Wählen Sie das Waldgebiet aus, für das Sie die aktuellen Messwerte anzeigen wollen.
           </p>
           <v-combobox
             v-model="store.state.selectedArea"
@@ -164,7 +188,6 @@ export default defineComponent({
             @update:modelValue="updateData"
           ></v-combobox>
         </v-card>
-        <!-- <weather></weather> -->
       </v-col>
     </v-row>
   </v-container>

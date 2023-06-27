@@ -24,10 +24,14 @@ export default createStore({
       temperature: {
         latest: null,
         lastWeekHistory: null,
+        todaysMin: null,
+        todaysMax: null,
       },
       humidity: {
         latest: null,
         lastWeekHistory: null,
+        todaysMin: null,
+        todaysMax: null,
       },
       user: {
         loggedIn: false,
@@ -57,20 +61,16 @@ export default createStore({
           ? (data as Data).data[0].measurements[0]
           : undefined;
       });
+      await GetData(state.data.types[0], [state.selectedArea]).then((data) => {
+        state.temperature.lastWeekHistory = data
+          ? (data as Data).data[0].measurements
+          : [];
+      });
     },
     async fetchAll(state: State) {
       await GetTypes().then((types) => (state.data.types = types));
       await GetUsers().then((users) => (state.users = users));
       await GetRoles().then((roles) => (state.roles = roles));
-      await GetAggregatedData(
-        state.data.types[0],
-        AggregateFunction.COUNT,
-        undefined,
-        undefined,
-        undefined,
-        undefined,
-        3
-      ).then((data) => console.debug(data));
       await GetNodes().then((nodes) => (state.nodes = nodes));
       state.selectedArea = state.nodes[0].uuid;
       await GetAreas().then((areas) => (state.areas = areas));
@@ -125,10 +125,72 @@ export default createStore({
         update.roleId
       ).then(() => GetUsers().then((users) => (state.users = users)));
     },
+    async fetchChartData(
+      state: State,
+      data: { type: string; measuredStart: Date; measuredEnd: Date }
+    ) {
+      await GetTypes().then((types) => (state.data.types = types));
+      GetData(
+        data.type,
+        undefined,
+        data.measuredStart,
+        data.measuredEnd
+      ).then((data) => {
+        state.temperature.lastWeekHistory = data
+          ? (data as Data).data[0].measurements
+          : [];
+      });
+    },
     deleteUser(state: State, user: User) {
       DeleteUser(user).then(() =>
         GetUsers().then((users) => (state.users = users))
       );
+    },
+    async getTemperatureRange(
+      state: State,
+      data: { type: string; measuredStart: Date; measuredEnd: Date }
+    ) {
+      GetAggregatedData(
+        data.type,
+        AggregateFunction.MINIMUM,
+        undefined,
+        data.measuredStart,
+        data.measuredEnd,
+        undefined,
+        1
+      ).then(min => state.temperature.todaysMin = parseFloat(min.samples[0].value));
+      GetAggregatedData(
+        data.type,
+        AggregateFunction.MAXIMUM,
+        undefined,
+        data.measuredStart,
+        data.measuredEnd,
+        undefined,
+        1
+      ).then(max => state.temperature.todaysMax = parseFloat(max.samples[0].value));
+    },
+    async getHumidityRange(
+      state: State,
+      data: { type: string; measuredStart: Date; measuredEnd: Date }
+    ) {
+      GetAggregatedData(
+        data.type,
+        AggregateFunction.MINIMUM,
+        undefined,
+        data.measuredStart,
+        data.measuredEnd,
+        undefined,
+        1
+      ).then(min => state.humidity.todaysMin = parseFloat(min.samples[0].value));
+      GetAggregatedData(
+        data.type,
+        AggregateFunction.MAXIMUM,
+        undefined,
+        data.measuredStart,
+        data.measuredEnd,
+        undefined,
+        1
+      ).then(max => state.humidity.todaysMax = parseFloat(max.samples[0].value));
     },
   },
 });

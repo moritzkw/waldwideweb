@@ -52,7 +52,6 @@ export default defineComponent({
 
     var currentDate = new Date(); // Get the current date and time
       var sevenDaysAgo = new Date(currentDate.getTime() - 7 * 24 * 60 * 60 * 1000);
-
       this.store.commit("fetchChartData", {type: this.store.state.data.types[0], measuredStart: sevenDaysAgo, measuredEnd: currentDate});
 
       const ctx = document.getElementById('lineChartVisitor');

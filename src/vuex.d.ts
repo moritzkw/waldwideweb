@@ -8,6 +8,8 @@ declare module "@vue/runtime-core" {
     temperature: {
       latest?: Measurement
       lastWeekHistory: Array<Measurement>;
+      todaysMin: number,
+      todaysMax: number,
     };
     humidity: {
       latest?: Measurement;

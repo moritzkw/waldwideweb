@@ -82,6 +82,15 @@ export default defineComponent({
     },
 
   },
+  mounted(){
+    var currentDate = new Date(); // Get the current date and time
+    const startOfDay = new Date(currentDate);
+    startOfDay.setHours(0, 0, 0, 0);
+
+    const endOfDay = new Date(currentDate);
+    endOfDay.setHours(23, 59, 59, 999);
+    this.store.commit("getHumidityRange", { type: "humidity_dummy", measuredStart: startOfDay, measuredEnd: endOfDay});
+  }, 
 });
 </script>
 

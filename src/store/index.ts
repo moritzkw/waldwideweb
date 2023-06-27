@@ -24,10 +24,14 @@ export default createStore({
       temperature: {
         latest: null,
         lastWeekHistory: null,
+        todaysMin: null,
+        todaysMax: null,
       },
       humidity: {
         latest: null,
         lastWeekHistory: null,
+        todaysMin: null,
+        todaysMax: null,
       },
       user: {
         loggedIn: false,
@@ -67,15 +71,6 @@ export default createStore({
       await GetTypes().then((types) => (state.data.types = types));
       await GetUsers().then((users) => (state.users = users));
       await GetRoles().then((roles) => (state.roles = roles));
-      await GetAggregatedData(
-        state.data.types[0],
-        AggregateFunction.COUNT,
-        undefined,
-        undefined,
-        undefined,
-        undefined,
-        3
-      ).then((data) => console.debug(data));
       await GetNodes().then((nodes) => (state.nodes = nodes));
       state.selectedArea = state.nodes[0].uuid;
       await GetAreas().then((areas) => (state.areas = areas));
@@ -134,8 +129,7 @@ export default createStore({
       state: State,
       data: { type: String; measuredStart: Date; measuredEnd: Date }
     ) {
-      await GetTypes().then((types) => (state.data.types = types));
-      
+      await GetTypes().then((types) => (state.data.types = types));   
       GetData(
         state.data.types[0],
         undefined,
@@ -152,5 +146,29 @@ export default createStore({
         GetUsers().then((users) => (state.users = users))
       );
     },
+    async getTemperatureRange(state: State,
+      data: { type: String; measuredStart: Date; measuredEnd: Date}) {
+        const aggregatedData = await GetAggregatedData(
+        state.data.types[0],
+        AggregateFunction.RANGE,
+        undefined,
+        data.measuredStart,
+        data.measuredEnd,
+        "24h"
+      );
+      console.log(aggregatedData);    
+    },
+    async getHumidityRange(state: State,
+      data: { type: String; measuredStart: Date; measuredEnd: Date}) {
+        const aggregatedData = await GetAggregatedData(
+        state.data.types[1],
+        AggregateFunction.RANGE,
+        undefined,
+        data.measuredStart,
+        data.measuredEnd,
+        "24h"
+      );
+      console.log(aggregatedData);    
+    }
   },
 });

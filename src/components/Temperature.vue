@@ -52,7 +52,7 @@ export default defineComponent({
       console.debug("Temperature Dialog clicked...")
       var currentDate = new Date(); // Get the current date and time
       var sevenDaysAgo = new Date(currentDate.getTime() - 7 * 24 * 60 * 60 * 1000);
-
+      
       this.store.commit("fetchChartData", {type: this.store.state.data.types[0], measuredStart: sevenDaysAgo, measuredEnd: currentDate});
     }
   },
@@ -82,8 +82,17 @@ export default defineComponent({
       return week;
     },
   },
-});
+  mounted(){
+    var currentDate = new Date(); // Get the current date and time
+    const startOfDay = new Date(currentDate);
+    startOfDay.setHours(0, 0, 0, 0);
 
+    const endOfDay = new Date(currentDate);
+    endOfDay.setHours(23, 59, 59, 999);
+    this.store.commit("getTemperatureRange", { type: "temperature_dummy", measuredStart: startOfDay, measuredEnd: endOfDay});
+  }, 
+ }
+);
 </script>
 
 <template>
@@ -109,7 +118,7 @@ export default defineComponent({
                       <div class="text-h7">Min: 4°C</div>
                       <div class="text-h7">Max: 18°C</div>
                     </v-col>
-                  </div>s
+                  </div>
                 </v-col>
                 <v-col>
                   <HistoryChart :data="store.state.temperature.lastWeekHistory"></HistoryChart>

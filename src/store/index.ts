@@ -5,6 +5,7 @@ import {
   GetAggregatedData,
   GetAreas,
   GetData,
+  GetMe,
   GetNodes,
   GetRoles,
   GetTypes,
@@ -22,6 +23,7 @@ import { User } from "../types/user";
 import { Area } from "../types/area";
 import { Update } from "../types/update";
 import { Role } from "../types/role";
+import router from "../router";
 
 export default createStore({
   state(): State {
@@ -97,12 +99,20 @@ export default createStore({
     cancelLogin(state: State) {
       state.user.loginDialogOpen = false;
     },
-    login(state: State, data: { username: string; password: string }) {
-      login(data.username, data.password).then((response) => {
+    async login(state: State, data: { username: string; password: string }) {
+      await login(data.username, data.password).then((response) => {
         state.user.loggedIn = response.status === 200;
-        state.user.loginDialogOpen = response.status !== 200;
         if (response.status === 200 && response.data) {
+          state.user.loginDialogOpen = true;
           // $cookie.set("token", response.data.token, response.data.expiresAt)
+          
+          GetMe().then(me => state.user.role = me.role.name).then(() => {
+              if (state.user.role === "admin") router.push({ path: "/admin" });
+              else if (state.user.role === "forester") router.push({path: "/forester"});
+              state.user.loginDialogOpen = false;
+          });
+        } else {
+          state.user.loginDialogOpen = true;
         }
       });
     },
@@ -110,6 +120,7 @@ export default createStore({
       logout().then((loggedOut) => {
         state.user.loginDialogOpen = !loggedOut;
         state.user.loggedIn = !loggedOut;
+        router.push({path: "/"});
       });
     },
     addUser(

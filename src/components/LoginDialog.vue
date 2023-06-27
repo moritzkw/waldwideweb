@@ -16,13 +16,10 @@ export default defineComponent({
   methods: {
     async Login(username: string, password: string) {
       this.$store.commit("login", {username, password});
-
-      this.router.push({ path: "/admin" });
     },
     Logout() {
       this.dialogOpen = false;
       this.$store.commit("logout");
-      this.router.push({ path: "/" });
     },
     HandleDialogAction() {
       if (this.$store.state.user.loggedIn) this.Logout();

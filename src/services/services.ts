@@ -7,6 +7,7 @@ import { AggregatedData } from "../types/aggregatedData";
 import { Area } from "../types/area";
 import { User } from "../types/user";
 import { Update } from "../types/update";
+import { Me } from "../types/me";
 
 const BACKEND_API_URL = "https://backend.mdma.haveachin.de";
 function config() {
@@ -178,4 +179,10 @@ export async function PostUpdate(data: string, version: string): Promise<boolean
   }, config())
     .then(response => response.status === 201)
     .catch(() => false);
+}
+
+export async function GetMe(): Promise<Me> {
+  return await axios.get(BACKEND_API_URL + "/me", config())
+    .then(response => response.data)
+    .catch(() => {});
 }

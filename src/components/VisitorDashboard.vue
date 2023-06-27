@@ -2,6 +2,7 @@
 import { State, defineComponent } from "vue";
 import Weather from "./Weather.vue";
 import Temperature from "./Temperature.vue";
+import Humidity from "./Humidity.vue";
 import { GChart } from "vue-google-charts";
 import store from "../store/index";
 import { Store } from "vuex/types/index.js";
@@ -9,27 +10,16 @@ import { Area } from "../types/area";
 import { ref } from 'vue';
 import Chart from 'chart.js/auto';
 
-
 // Logo
-
 export default defineComponent({
-  components: { Weather, GChart, Temperature },
+  components: { Weather, GChart, Temperature, Humidity},
   name: "VisitorDashboard",
 
   data() {
     return {
       // Array will be automatically processed with visualization.arrayToDataTable function
       forestAreas: [] as Node[],
-      chartData: [
-        ["Tag", "Besucher"],
-        ["Donnerstag", 83],
-        ["Freitag", 147],
-        ["Samstag", 154],
-        ["Sonntag", 169],
-        ["Montag", 65],
-        ["Dienstag", 49],
-        ["Mittwoch", 72],
-      ],
+      
       chartOptions: {
         chart: {
           title: "Company Performance",
@@ -59,7 +49,6 @@ export default defineComponent({
       (nodes: Node[], node: Node) => nodes.concat(node.uuid),
       [] as Node[]
     );
-
 
     var currentDate = new Date(); // Get the current date and time
       var sevenDaysAgo = new Date(currentDate.getTime() - 7 * 24 * 60 * 60 * 1000);
@@ -121,7 +110,6 @@ export default defineComponent({
           <v-container fluid>
             <v-row justify="space-between">
               <v-col>
-                
                 <v-card class="card" title="Temperatur" :elevation="0">
                   <div class="d-flex align-center">
                     <v-icon
@@ -148,6 +136,7 @@ export default defineComponent({
                       }}%
                     </div>
                   </div>
+                  <Humidity></Humidity>
                 </v-card>
               </v-col>
               <v-col>

@@ -8,29 +8,33 @@ import {
   GetNodes,
   GetRoles,
   GetTypes,
+  GetUpdates,
   GetUsers,
+  PostUpdate,
   UpdateUser,
   login,
   logout,
 } from "../services/services";
 import { State } from "vue";
 import { AggregateFunction } from "../types/aggregateFunction";
-import { Data } from "../types/data";
+import { Data, Measurement } from "../types/data";
 import { User } from "../types/user";
 import { Area } from "../types/area";
+import { Update } from "../types/update";
+import { Role } from "../types/role";
 
 export default createStore({
   state(): State {
     return {
       temperature: {
         latest: null,
-        lastWeekHistory: [],
+        lastWeekHistory: new Array<Measurement>(),
         todaysMin: null,
         todaysMax: null,
       },
       humidity: {
         latest: null,
-        lastWeekHistory: [],
+        lastWeekHistory: new Array<Measurement>(),
         todaysMin: null,
         todaysMax: null,
       },
@@ -40,13 +44,14 @@ export default createStore({
         role: "visitor",
       },
       selectedArea: "",
-      users: [],
-      nodes: [],
+      users: new Array<User>(),
+      nodes: new Array<Node>(),
       areas: new Array<Area>(),
       data: {
-        types: [],
+        types: new Array<string>(),
       },
-      roles: [],
+      roles: new Array<Role>(),
+      updates: new Array<Update>(),
     };
   },
   mutations: {
@@ -193,5 +198,11 @@ export default createStore({
         1
       ).then(max => state.humidity.todaysMax = parseFloat(max.samples[0].value));
     },
+    fetchUpdates(state: State) {
+      GetUpdates().then(updates => state.updates = updates);
+    },
+    postUpdate(state: State, update: { data: string, version: string }) {
+      PostUpdate(update.data, update.version).then(() => GetUpdates().then((updates) => state.updates = updates));
+    }
   },
 });

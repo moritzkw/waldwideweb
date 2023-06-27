@@ -6,6 +6,7 @@ import { AggregateFunction } from "../types/aggregateFunction";
 import { AggregatedData } from "../types/aggregatedData";
 import { Area } from "../types/area";
 import { User } from "../types/user";
+import { Update } from "../types/update";
 
 const BACKEND_API_URL = "https://backend.mdma.haveachin.de";
 function config() {
@@ -111,7 +112,6 @@ export async function GetData(
   measuredStart?: Date,
   measuredEnd?: Date
 ): Promise<Data> {
-  console.debug(meshNodes)
   let requestUrl = `${BACKEND_API_URL}/data?type=${type}`;
   if (meshNodes)
     meshNodes.forEach((meshNode) => (requestUrl += `&meshNodes=${meshNode}`));
@@ -163,4 +163,19 @@ export async function GetAreas(): Promise<Area[]> {
   return await axios.get(BACKEND_API_URL + "/areas", config())
     .then(response => response.data)
     .catch(() => []);
+}
+
+export async function GetUpdates(): Promise<Update[]> {
+  return await axios.get(BACKEND_API_URL + "/mesh-node-updates", config())
+    .then(response => response.data)
+    .catch(() => []);
+}
+
+export async function PostUpdate(data: string, version: string): Promise<boolean> {
+  return await axios.post(BACKEND_API_URL + "/mesh-node-updates", {
+    data: btoa(data),
+    version: version
+  }, config())
+    .then(response => response.status === 201)
+    .catch(() => false);
 }

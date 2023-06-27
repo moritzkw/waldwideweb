@@ -112,7 +112,7 @@ export default defineComponent({
                       color="grey"
                       size="x-large"
                     />
-                    <div class="text-h2">17°C</div>
+                    <div class="text-h2">{{ parseFloat(store.state.temperature.latest.value).toFixed(1) }}%</div>
                     <v-col class="ml-6">
                       <div class="text-h7">Min: {{ store.state.temperature.todaysMin.toFixed(1) }}°C</div>
                       <div class="text-h7">Max: {{ store.state.temperature.todaysMax.toFixed(1) }}°C</div>

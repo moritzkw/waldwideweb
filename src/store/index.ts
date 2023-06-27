@@ -61,49 +61,42 @@ export default createStore({
     };
   },
   mutations: {
-    async fetchData(state: State) {
-      const selectedArea = state.areas.find((area: Area) => area.areaId === state.selectedArea);
-      await GetData(state.data.types[0], selectedArea.meshNodeUUIDs).then((data) => {
-        state.temperature.latest = data
-          ? (data as Data).data[0].measurements[0]
-          : undefined;
-      });
-      await GetData(state.data.types[1], selectedArea.meshNodeUUIDs).then((data) => {
-        state.humidity.latest = data
-          ? (data as Data).data[0].measurements[0]
-          : undefined;
-      });
-      await GetData(state.data.types[0], [state.selectedArea]).then((data) => {
-        state.temperature.lastWeekHistory = data
-          ? (data as Data).data[0].measurements
-          : [];
-      });
-    },
     async fetchForVisitor(state: State) {
       await GetAreas().then((areas) => (state.areas = areas));
       await GetTypes().then((types) => (state.data.types = types));
-      state.selectedArea = state.areas[0].areaId;
-      await GetData(state.data.types[0], state.areas[0].meshNodeUUIDs).then((data) => {
+      if (state.selectedArea.length === 0) state.selectedArea = state.areas[0].areaId;
+      const selectedArea = state.areas.find((area: Area) => area.areaId === state.selectedArea);
+
+      const now = new Date();
+      const nowMinusOneWeek = new Date(now.getTime() - 7 * 24 * 60 * 60 * 1000);
+      await GetData(state.data.types[2], selectedArea.meshNodeUUIDs, nowMinusOneWeek, now).then((data) => {
         state.temperature.latest = data
           ? (data as Data).data[0].measurements[0]
           : undefined;
+        state.temperature.lastWeekHistory = data
+          ? (data as Data).data
+          : undefined;
       });
-      await GetData(state.data.types[1], [state.selectedArea]).then((data) => {
+      await GetData(state.data.types[3], [selectedArea.meshNodeUUIDs[0]], nowMinusOneWeek, now).then((data) => {
         state.humidity.latest = data
           ? (data as Data).data[0].measurements[0]
+          : undefined;
+        state.humidity.lastWeekHistory = data
+          ? (data as Data).data
           : undefined;
       });
     },
     async fetchForForester(state: State) {
+      const selectedArea = state.areas.find((area: Area) => area.areaId === state.selectedArea);
       await GetAreas().then((areas) => (state.areas = areas));
       await GetTypes().then((types) => (state.data.types = types));
-      state.selectedArea = state.areas[0].areaId;
-      await GetData(state.data.types[0], state.areas[0].meshNodeUUIDs).then((data) => {
+      if (state.selectedArea.length === 0) state.selectedArea = state.areas[0].areaId;
+      await GetData(state.data.types[2], selectedArea.meshNodeUUIDs).then((data) => {
         state.temperature.latest = data
           ? (data as Data).data[0].measurements[0]
           : undefined;
       });
-      await GetData(state.data.types[1], [state.selectedArea]).then((data) => {
+      await GetData(state.data.types[3], selectedArea.meshNodeUUIDs).then((data) => {
         state.humidity.latest = data
           ? (data as Data).data[0].measurements[0]
           : undefined;
@@ -283,7 +276,7 @@ export default createStore({
     updateNode(state: State, data: {node: Node, latitude: number, longitude: number}) {
       UpdateNode(data.node, data.latitude, data.longitude).then(() => {
         GetNodes().then(nodes => state.nodes = nodes);
-      })
+      });
     }
   },
 });

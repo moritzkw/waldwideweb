@@ -90,7 +90,7 @@ export default defineComponent({
         this.store.commit("updateNode", {
           node: node,
           latitude: this.editingPosition.lat,
-          longitude: this.editingPosition.long
+          longitude: this.editingPosition.long,
         });
         this.editingNode = null;
         this.editingPosition = null;
@@ -163,12 +163,10 @@ export default defineComponent({
                 @dragend="handleDragEnd">
                 <InfoWindow :options="infoWindowOptions">
                   <div>
-                    <p>
                     <div>
                       <h3 v-bind:title="node.uuid">GerätId:</h3>
                       <p>{{ node.uuid }}</p>
                     </div>
-                    </p>
                     <br />
                     <p>
                       <strong>Erstellt:</strong>

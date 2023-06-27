@@ -84,7 +84,7 @@ export default defineComponent({
     },
     areas() {
       if (store.state.areas) {
-        return (store as Store<State>).state.areas.reduce(
+        return (store as Store<State>).state.areas.slice().reduce(
           (areas: Area[], area: Area) => areas.concat(area.areaId),
           [] as Area[]
         );
@@ -96,7 +96,7 @@ export default defineComponent({
   },
   methods: {
     updateData() {
-      store.commit("fetchData");
+      store.commit("fetchForVisitor");
     },
   },
 });
@@ -126,7 +126,7 @@ export default defineComponent({
                       size="x-large"
                     />
                     <div class="text-h2 ml-4">
-                      {{ store.state.temperature.latest ? store.state.temperature.latest.value : "-" }}°C
+                      {{ store.state.temperature.latest ? parseFloat(store.state.temperature.latest.value).toFixed(1) : "-" }}°C
                     </div>
                   </div>
                   <Temperature></Temperature>
@@ -139,7 +139,7 @@ export default defineComponent({
                     <div class="text-h2 ml-4">
                       {{
                         store.state.humidity.latest
-                          ? store.state.humidity.latest.value
+                          ? parseFloat(store.state.humidity.latest.value).toFixed(1)
                           : "-"
                       }}%
                     </div>

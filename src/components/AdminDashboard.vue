@@ -36,10 +36,14 @@ export default defineComponent({
   watch: {
     selectedFile: function(file) {
       if (file.length > 0) {
-        var latestVersion = this.latestUpdate?.version.split(".");
-        var newVersionNumber = parseInt(latestVersion[latestVersion.length -  1]) + 1;
-        latestVersion[latestVersion.length - 1] = newVersionNumber.toString();
-        this.newVersion = latestVersion?.join(".")
+        if (this.latestUpdate) {
+          var latestVersion = this.latestUpdate?.version.split(".");
+          var newVersionNumber = parseInt(latestVersion[latestVersion.length -  1]) + 1;
+          latestVersion[latestVersion.length - 1] = newVersionNumber.toString();
+          this.newVersion = latestVersion?.join(".")
+        } else {
+          this.newVersion = "1.0.0";
+        }
       }
     }
   },
@@ -72,6 +76,7 @@ export default defineComponent({
         this.store.commit("postUpdate", {data: reader.result, version: this.newVersion })
       }
       reader.readAsBinaryString(this.selectedFile[0])
+      this.selectedFile = [];
     }
   },
 });

@@ -113,7 +113,7 @@ export async function GetRoles(): Promise<Role[]> {
 
 export async function GetData(
   type: string,
-  meshNodes?: string[],
+  meshNodes?: Array<string>,
   measuredStart?: Date,
   measuredEnd?: Date
 ): Promise<Data> {

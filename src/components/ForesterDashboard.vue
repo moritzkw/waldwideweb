@@ -13,7 +13,7 @@ export default defineComponent({
     return {
       editingNode: null as Node | null,
       editingPosition: null as { lat: number; long: number } | null,
-      center: { lat: 49.121945, lng: 9.211429 },
+      center: { lat: 49.118617, lng: 9.254468 },
       forestAreas: ["Wald A", "Wald B", "Wald C", "Wald D", "Wald E"],
       chartData: [
         ["Tag", "Besucher"],
@@ -169,7 +169,7 @@ export default defineComponent({
               api-key="AIzaSyBiaS391syegtj4i98-M0E7ylzmItDTDsc"
               style="height: 500px"
               :center="center"
-              :zoom="15"
+              :zoom="14"
             >
               <Marker
                 v-for="node in store.state.nodes"

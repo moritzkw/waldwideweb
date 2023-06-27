@@ -2,11 +2,8 @@
 import { defineComponent } from "vue";
 
 export default defineComponent({
-  computed: {
-    store() {
-      return this.$store;
-    },
-  }});
+  name: "AboutCard"
+});
 </script>
 
 <template>

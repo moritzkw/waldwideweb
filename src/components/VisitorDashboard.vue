@@ -9,12 +9,12 @@ import { Store } from "vuex/types/index.js";
 import { Area } from "../types/area";
 import { ref } from 'vue';
 import Chart from 'chart.js/auto';
-import DataCardVue from "./DataCard.vue";
+import WeatherCardVue from "./WeatherCard.vue";
 import AboutCardVue from "./AboutCard.vue";
 
 // Logo
 export default defineComponent({
-  components: { Weather, GChart, Temperature, Humidity, DataCardVue, AboutCardVue },
+  components: { Weather, GChart, Temperature, Humidity, WeatherCardVue, AboutCardVue },
   name: "VisitorDashboard",
 
   data() {
@@ -114,7 +114,7 @@ export default defineComponent({
     @click="store.state.sessionExpired = false"
   ></v-alert>
   <v-container>
-    <DataCardVue></DataCardVue>
+    <WeatherCardVue></WeatherCardVue>
     <v-row>
       <v-col>
         <v-card class="card" title="Besucherzahl" :elevation="5">
@@ -122,10 +122,9 @@ export default defineComponent({
             <v-row>
               <v-col>
                 <div class="d-flex align-center">
-                  <div class="text-h2">
-                    72<!-- {{ chartData.datasets[0].data[chartData.datasets[0].data.length - 1] }} -->
+                  <div class="text-h4">
+                    Bald verfügbar
                   </div>
-                  <v-icon icon="mdi-arrow-top-right ml-4" color="green" />
                 </div>
               </v-col>
               <v-col fluid>

@@ -4,11 +4,11 @@ import Weather from "./Weather.vue";
 import Temperature from "./Temperature.vue";
 import { GChart } from "vue-google-charts";
 import { GoogleMap, Marker, InfoWindow } from "vue3-google-map";
-import DataCardVue from "./DataCard.vue";
+import WeatherCardVue from "./WeatherCard.vue";
 import AboutCardVue from "./AboutCard.vue";
 
 export default defineComponent({
-  components: { Weather, GChart, Temperature, GoogleMap, Marker, InfoWindow, DataCardVue, AboutCardVue },
+  components: { Weather, GChart, Temperature, GoogleMap, Marker, InfoWindow, WeatherCardVue, AboutCardVue },
   name: "ForesterDashboard",
 
   data() {
@@ -120,7 +120,7 @@ export default defineComponent({
 
 <template>
   <v-container>
-    <DataCardVue></DataCardVue>
+    <WeatherCardVue></WeatherCardVue>
     <v-row>
       <v-col>
         <v-card class="card" title="Sensoren" :elevation="5">
@@ -132,7 +132,7 @@ export default defineComponent({
                 <InfoWindow :options="infoWindowOptions">
                   <div>
                     <div>
-                      <h3 v-bind:title="node.uuid">GerätId:</h3>
+                      <h3 v-bind:title="node.uuid">Gerät ID:</h3>
                       <p>{{ node.uuid }}</p>
                     </div>
                     <br />

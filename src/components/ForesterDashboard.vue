@@ -3,15 +3,15 @@ import { defineComponent } from "vue";
 import Weather from "./Weather.vue";
 import Temperature from "./Temperature.vue";
 import { GChart } from "vue-google-charts";
-import { GoogleMap, Marker} from "vue3-google-map";
+import { GoogleMap, Marker, InfoWindow } from "vue3-google-map";
 
 export default defineComponent({
-  components: { Weather, GChart, Temperature, GoogleMap, Marker},
+  components: { Weather, GChart, Temperature, GoogleMap, Marker, InfoWindow },
   name: "ForesterDashboard",
 
   data() {
     return {
-      center: { lat: 40.689247, lng: -74.044502 },
+      center: { lat: 49.121945, lng: 9.211429 },
       // Array will be automatically processed with visualization.arrayToDataTable function
       forestAreas: ["Wald A", "Wald B", "Wald C", "Wald D", "Wald E"],
       chartData: [
@@ -61,59 +61,61 @@ export default defineComponent({
       this.infoWindowNode = node;
       // Set the position and options of the info window based on the marker's position
       this.infoWindowPosition = { lat: node.latitude, lng: node.longitude };
-      this.infoWindowOptions = { /* customize the options if needed */ };
+      this.infoWindowOptions = { maxWidth: 320, maxHeight: 320 };
     },
 
-  getMarkerOptions(node: any) {
-    const latitude = parseFloat(node.latitude);
-    const longitude = parseFloat(node.longitude);
+    getMarkerOptions(node: any) {
+      const latitude = parseFloat(node.latitude);
+      const longitude = parseFloat(node.longitude);
 
-    // Überprüfe, ob die Werte numerisch sind
-    if (isNaN(latitude) || isNaN(longitude)) {
-      console.error('Ungültige Längen- oder Breitengrade:', node.latitude, node.longitude);
-      return null;
-    }
+      // Überprüfe, ob die Werte numerisch sind
+      if (isNaN(latitude) || isNaN(longitude)) {
+        console.error('Ungültige Längen- oder Breitengrade:', node.latitude, node.longitude);
+        return null;
+      }
 
-    // Erstelle die Optionen für den Marker
-    const markerOptions = {
-      position: { lat: latitude, lng: longitude },
-      isHovered: this.isNodeHovered(node),
-    };
+      // Erstelle die Optionen für den Marker
+      const markerOptions = {
+        position: { lat: latitude, lng: longitude },
+        isHovered: this.isNodeHovered(node),
+      };
 
-    return markerOptions;
-  },
+      return markerOptions;
+    },
 
-  isNodeHovered(node: any) {
-  return this.hoveredNode !== null && this.hoveredNode !== undefined && this.hoveredNode.uuid === node.uuid;
-},
+    isNodeHovered(node: any) {
+      return this.hoveredNode !== null && this.hoveredNode !== undefined && this.hoveredNode.uuid === node.uuid;
+    },
 
-  setHoveredNode(node: any) {
+    setHoveredNode(node: any) {
       this.hoveredNode = node;
     },
     clearHoveredNode() {
       this.hoveredNode = null;
     },
     handleNodeClick(node: any) {
-    // Führe hier die gewünschte Logik aus, wenn auf ein Node geklickt wird
-    console.log('Node clicked:', node);
-  },
+      // Führe hier die gewünschte Logik aus, wenn auf ein Node geklickt wird
+      console.log('Node clicked:', node);
 
-  handleNodeHover(node: any) {
-    // Setze den gehoverten Node im Zustand der Komponente
-    this.hoveredNode = node;
+      
+    },
+
+    handleNodeHover(node: any) {
+      // Setze den gehoverten Node im Zustand der Komponente
+      this.hoveredNode = node;
+    },
   },
-},
 
   mounted() {
-      console.debug(this.store.state
-      )
+    console.debug(this.store.state
+    )
   },
   computed: {
     store() {
       return this.$store;
     },
   },
-  },
+},
 );
 </script>
 
@@ -130,11 +132,7 @@ export default defineComponent({
               <v-col>
                 <v-card class="card" title="Luftfeuchtigkeit" elevation="0">
                   <div class="d-flex align-center">
-                    <v-icon
-                      icon="mdi-water-outline"
-                      color="blue"
-                      size="x-large"
-                    />
+                    <v-icon icon="mdi-water-outline" color="blue" size="x-large" />
                     <div class="text-h2 ml-4">
                       {{ store.state.humidity.latest ? store.state.humidity.latest.value : "-" }}%
                     </div>
@@ -144,11 +142,7 @@ export default defineComponent({
               <v-col>
                 <v-card class="card" title="Wind" elevation="0">
                   <div class="d-flex align-center">
-                    <v-icon
-                      icon="mdi-weather-windy"
-                      color="grey"
-                      size="x-large"
-                    />
+                    <v-icon icon="mdi-weather-windy" color="grey" size="x-large" />
                     <div class="text-h2 ml-4">
                       {{ "-" }} km/h
                     </div>
@@ -164,31 +158,22 @@ export default defineComponent({
       <v-col>
         <v-card class="card" title="Sensoren" :elevation="5">
           <v-container>
-            <GoogleMap api-key="AIzaSyBiaS391syegtj4i98-M0E7ylzmItDTDsc" 
-              style="height: 500px" 
-              :center="center"
+            <GoogleMap api-key="AIzaSyBiaS391syegtj4i98-M0E7ylzmItDTDsc" style="height: 500px" :center="center"
               :zoom="15">
-              <Marker :options="{ position: center }" />
+
               <!-- Iteriere über die Nodes und erstelle Marker -->
-              <Marker v-for="node in store.state.nodes" 
-                :key="node.id" 
-                :options="getMarkerOptions(node)" 
-                @click="handleNodeClick(node)"
-                @mouseover="handleNodeHover(node)"
-                @mouseout="clearHoveredNode" 
-              />
-              <info-window
-                v-if="infoWindowNode !== null"
-                :position="infoWindowPosition"
-                :options="infoWindowOptions"
-              >
-             <div v-if="isNodeHovered(hoveredNode)" class="node-overlay">
-               <p>CreatedAt: {{ hoveredNode.createdAt }}</p>
-               <p>Latitude: {{ hoveredNode.latitude }}</p>
-               <p>Longitude: {{ hoveredNode.longitude }}</p>
-               <p>UUID: {{ hoveredNode.uuid }}</p>
-              </div>
-              </info-window>
+              <Marker v-for="node in store.state.nodes" :key="node.id" :options="getMarkerOptions(node)"
+                @click="handleNodeClick(node)" @mouseover="handleNodeHover(node)" @mouseout="clearHoveredNode">
+                <InfoWindow  :options="infoWindowOptions">
+                  <div>
+                    <p><strong>Erstellt:</strong> {{ new Date(node.createdAt).toLocaleString() }}</p>
+                    <p><strong>Längengrad:</strong> {{ node.latitude }}</p>
+                    <p><strong>Breitengrad:</strong> {{ node.longitude }}</p>
+                    <p><strong>UUID:</strong> {{ node.uuid }}</p>
+                    <v-btn>Position bearbeiten</v-btn>
+                  </div>
+                </InfoWindow> </Marker>
+
             </GoogleMap>
           </v-container>
         </v-card>
@@ -208,11 +193,7 @@ export default defineComponent({
                 </div>
               </v-col>
               <v-col>
-                <GChart
-                  type="LineChart"
-                  :data="chartData"
-                  :options="chartOptions"
-                />
+                <GChart type="LineChart" :data="chartData" :options="chartOptions" />
               </v-col>
             </v-row>
           </v-container>
@@ -224,11 +205,7 @@ export default defineComponent({
             Wählen Sie das Waldgebiet aus, für das Sie die aktuellen Messwerte
             anzeigen wollen.
           </p>
-          <v-combobox
-            class="px-6"
-            label="Waldgebiet auswählen"
-            :items="forestAreas"
-          ></v-combobox>
+          <v-combobox class="px-6" label="Waldgebiet auswählen" :items="forestAreas"></v-combobox>
         </v-card>
         <!-- <weather></weather> -->
       </v-col>
@@ -240,13 +217,14 @@ export default defineComponent({
 .card:hover {
   cursor: pointer;
 }
+
 .node-overlay {
-    position: absolute;
-    top: 0;
-    left: 0;
-    padding: 10px;
-    background-color: rgba(255, 255, 255, 0.9);
-    box-shadow: 0 2px 5px rgba(0, 0, 0, 0.3);
-    z-index: 9999;
-  }
+  position: absolute;
+  top: 0;
+  left: 0;
+  padding: 10px;
+  background-color: rgba(255, 255, 255, 0.9);
+  box-shadow: 0 2px 5px rgba(0, 0, 0, 0.3);
+  z-index: 9999;
+}
 </style>

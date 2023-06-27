@@ -9,7 +9,6 @@
             <v-btn :icon="themeIcon" @click="toggleTheme"></v-btn>
           </template>
         </v-app-bar>
-        <!-- <VisitorDashboard /> -->
         <router-view></router-view>
       </v-main>
     </v-app>
@@ -38,7 +37,8 @@ export default defineComponent({
     };
   },
   mounted() {
-    this.$store.commit("fetchAll");
+    console.debug("App mounted")
+    this.$store.commit("checkLogin");
   },
 
   methods: {

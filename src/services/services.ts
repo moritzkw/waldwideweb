@@ -54,7 +54,10 @@ export async function login(
 
 export async function logout(): Promise<boolean> {
   return await axios.delete(BACKEND_API_URL + "/logout", config())
-    .then(response => response.status === 200)
+    .then(response => {
+      document.cookie = "token=; expires=Thu, 01 Jan 1970 00:00:00 GMT; path=/";
+      return response.status === 200;
+    })
     .catch(() => false);
 }
 

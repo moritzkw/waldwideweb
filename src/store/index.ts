@@ -41,12 +41,14 @@ export default createStore({
         todaysMax: null,
       },
       user: {
+        sessionExpired: false,
         loggedIn: false,
         loginDialogOpen: false,
         role: "visitor",
       },
       selectedArea: "",
       users: new Array<User>(),
+      usersLastUpdated: null,
       nodes: new Array<Node>(),
       areas: new Array<Area>(),
       data: {
@@ -75,12 +77,9 @@ export default createStore({
           : [];
       });
     },
-    async fetchAll(state: State) {
+    async fetchForVisitor(state: State) {
       await GetAreas().then((areas) => (state.areas = areas));
       await GetTypes().then((types) => (state.data.types = types));
-      await GetUsers().then((users) => (state.users = users));
-      await GetRoles().then((roles) => (state.roles = roles));
-      await GetNodes().then((nodes) => (state.nodes = nodes));
       state.selectedArea = state.areas[0].areaId;
       await GetData(state.data.types[0], state.areas[0].meshNodeUUIDs).then((data) => {
         state.temperature.latest = data
@@ -92,6 +91,18 @@ export default createStore({
           ? (data as Data).data[0].measurements[0]
           : undefined;
       });
+    },
+    async fetchForForester(state: State) {
+      await state.fetchForVisitor(state);
+      await GetNodes().then((nodes) => (state.nodes = nodes));
+    },
+    async fetchForAdmin(state: State) {
+      await GetUsers().then((users) => {
+        state.users = users;
+        state.usersLastUpdated = new Date();
+      });
+      await GetRoles().then((roles) => (state.roles = roles));
+      await GetUpdates().then((updates) => state.updates = updates);
     },
     startLogin(state: State) {
       state.user.loginDialogOpen = true;
@@ -123,12 +134,44 @@ export default createStore({
         router.push({path: "/"});
       });
     },
+    async checkLogin(state: State) {
+      const tokenCookie = document.cookie
+        .split("; ")
+        .find(row => row.startsWith("token="));
+      
+      if (tokenCookie) {
+        const me = await GetMe();
+        if (me) {
+          state.sessionExpired = false;
+          state.user.loggedIn = true;
+          if (me.role.name === "admin") router.push("/admin");
+          else if (me.role.name === "forester") router.push("/forester");
+        } else {          
+          state.sessionExpired = true;
+          state.user.loggedIn = false;
+          router.push("/");
+        }
+      } else {
+        state.sessionExpired = false;
+        state.user.loggedIn = false;
+        router.push("/");
+      }
+    },
+    fetchUsers(state: State) {
+      GetUsers().then((users) => {
+        state.users = users;
+        state.usersLastUpdated = new Date();
+      });
+    },
     addUser(
       state: State,
       user: { username: string; password: string; roleId: number }
     ) {
       AddUser(user.username, user.password, user.roleId).then(() =>
-        GetUsers().then((users) => (state.users = users))
+        GetUsers().then((users) => {
+          state.users = users;
+          state.usersLastUpdated = new Date();
+        })
       );
     },
     updateUser(
@@ -140,7 +183,12 @@ export default createStore({
         update.username,
         update.roleId,
         update.password,
-      ).then(() => GetUsers().then((users) => (state.users = users)));
+      ).then(() => 
+        GetUsers().then((users) => {
+          state.users = users;
+          state.usersLastUpdated = new Date();
+        })
+      );
     },
     async fetchChartData(
       state: State,
@@ -160,7 +208,10 @@ export default createStore({
     },
     deleteUser(state: State, user: User) {
       DeleteUser(user).then(() =>
-        GetUsers().then((users) => (state.users = users))
+        GetUsers().then((users) => {
+          state.users = users;
+          state.usersLastUpdated = new Date();
+        })
       );
     },
     async getTemperatureRange(

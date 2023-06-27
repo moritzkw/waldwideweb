@@ -45,6 +45,7 @@ export default defineComponent({
     };
   },
   mounted() {
+    this.store.commit("fetchForVisitor");
     this.forestAreas = (store as Store<State>).state.nodes.reduce(
       (nodes: Node[], node: Node) => nodes.concat(node.uuid),
       [] as Node[]
@@ -102,6 +103,14 @@ export default defineComponent({
 </script>
 
 <template>
+  <v-alert
+    v-model="store.state.sessionExpired"
+    text="Ihre letzte Sitzung ist abgelaufen. Bitte melden Sie sich erneut an."
+    type="warning"
+    variant="tonal"
+    closable
+    @click="store.state.sessionExpired = false"
+  ></v-alert>
   <v-container>
     <v-row>
       <v-col>

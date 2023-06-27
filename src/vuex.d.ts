@@ -21,6 +21,7 @@ declare module "@vue/runtime-core" {
 
     user: {
       loggedIn: boolean;
+      sessionExpired: boolean;
       loginDialogOpen: boolean;
       role: string;
     };
@@ -28,6 +29,7 @@ declare module "@vue/runtime-core" {
     nodes: Array<Node>;
     areas: Array<Area>;
     users: Array<User>;
+    usersLastUpdated: Date;
     data: {
       types: Array<string>;
     };

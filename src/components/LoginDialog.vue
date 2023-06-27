@@ -18,7 +18,6 @@ export default defineComponent({
       this.$store.commit("login", {username, password});
     },
     Logout() {
-      this.dialogOpen = false;
       this.$store.commit("logout");
     },
     HandleDialogAction() {

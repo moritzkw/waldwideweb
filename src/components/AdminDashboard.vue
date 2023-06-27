@@ -31,7 +31,7 @@ export default defineComponent({
     };
   },
   mounted() {
-      this.store.commit("fetchUpdates");
+    this.store.commit("fetchForAdmin");
   },
   watch: {
     selectedFile: function(file) {
@@ -87,7 +87,7 @@ export default defineComponent({
         <v-col>
           <v-row>
             <div class="ml-4">Aktuelle Version: {{ latestUpdate?.version }}</div>
-            <div class="ml-4 font-italic">({{ new Date(latestUpdate?.createAt).toLocaleString() }})</div>
+            <div class="ml-4 font-italic">({{ latestUpdate ? new Date(latestUpdate!.createAt).toLocaleString() : "keine aktuelle Version"}})</div>
           </v-row>
           <v-row class="mb-8" v-if="true">
             <v-alert
@@ -126,8 +126,8 @@ export default defineComponent({
       </v-card>
       <v-card class="pa-4" elevation="5">
         <AddUserDialog></AddUserDialog>
-        <v-btn append-icon="mdi-refresh" class="my-2">Aktualisieren</v-btn>
-        <div class="ml-4 font-italic">Zuletzt aktualisiert: 07.06.2023 10:05 Uhr</div>
+        <v-btn append-icon="mdi-refresh" class="my-2" @click="store.commit('fetchUsers')">Aktualisieren</v-btn>
+        <div class="ml-4 font-italic">Zuletzt aktualisiert: {{ store.state.usersLastUpdated ? store.state.usersLastUpdated.toLocaleString() : "nicht bekannt" }}</div>
         <v-list class="mt-4">
           <v-container class="pa-0" v-bind="user" v-for="user in users" :key="user.username" fluid>
             <v-list-item :key="user.username" :title="user.username" >

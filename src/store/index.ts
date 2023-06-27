@@ -127,11 +127,11 @@ export default createStore({
     },
     async fetchChartData(
       state: State,
-      data: { type: String; measuredStart: Date; measuredEnd: Date }
+      data: { type: string; measuredStart: Date; measuredEnd: Date }
     ) {
-      await GetTypes().then((types) => (state.data.types = types));   
+      await GetTypes().then((types) => (state.data.types = types));
       GetData(
-        state.data.types[0],
+        data.type,
         undefined,
         data.measuredStart,
         data.measuredEnd
@@ -146,29 +146,51 @@ export default createStore({
         GetUsers().then((users) => (state.users = users))
       );
     },
-    async getTemperatureRange(state: State,
-      data: { type: String; measuredStart: Date; measuredEnd: Date}) {
-        const aggregatedData = await GetAggregatedData(
-        state.data.types[0],
-        AggregateFunction.RANGE,
+    async getTemperatureRange(
+      state: State,
+      data: { type: string; measuredStart: Date; measuredEnd: Date }
+    ) {
+      GetAggregatedData(
+        data.type,
+        AggregateFunction.MINIMUM,
         undefined,
         data.measuredStart,
         data.measuredEnd,
-        "24h"
-      );
-      console.log(aggregatedData);    
+        undefined,
+        1
+      ).then(min => state.temperature.todaysMin = parseFloat(min.samples[0].value));
+      GetAggregatedData(
+        data.type,
+        AggregateFunction.MAXIMUM,
+        undefined,
+        data.measuredStart,
+        data.measuredEnd,
+        undefined,
+        1
+      ).then(max => state.temperature.todaysMax = parseFloat(max.samples[0].value));
     },
-    async getHumidityRange(state: State,
-      data: { type: String; measuredStart: Date; measuredEnd: Date}) {
-        const aggregatedData = await GetAggregatedData(
-        state.data.types[1],
-        AggregateFunction.RANGE,
+    async getHumidityRange(
+      state: State,
+      data: { type: string; measuredStart: Date; measuredEnd: Date }
+    ) {
+      GetAggregatedData(
+        data.type,
+        AggregateFunction.MINIMUM,
         undefined,
         data.measuredStart,
         data.measuredEnd,
-        "24h"
-      );
-      console.log(aggregatedData);    
-    }
+        undefined,
+        1
+      ).then(min => state.humidity.todaysMin = parseFloat(min.samples[0].value));
+      GetAggregatedData(
+        data.type,
+        AggregateFunction.MAXIMUM,
+        undefined,
+        data.measuredStart,
+        data.measuredEnd,
+        undefined,
+        1
+      ).then(max => state.humidity.todaysMax = parseFloat(max.samples[0].value));
+    },
   },
 });

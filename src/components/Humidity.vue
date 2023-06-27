@@ -89,7 +89,7 @@ export default defineComponent({
 
     const endOfDay = new Date(currentDate);
     endOfDay.setHours(23, 59, 59, 999);
-    this.store.commit("getHumidityRange", { type: "humidity_dummy", measuredStart: startOfDay, measuredEnd: endOfDay});
+    this.store.commit("getHumidityRange", { type: "humidity", measuredStart: startOfDay, measuredEnd: endOfDay});
   }, 
 });
 </script>
@@ -114,8 +114,8 @@ export default defineComponent({
                     />
                     <div class="text-h2">64%</div>
                     <v-col class="ml-6">
-                      <div class="text-h7">Min: 58%</div>
-                      <div class="text-h7">Max: 65%</div>
+                      <div class="text-h7">Min: {{ store.state.humidity.todaysMin.toFixed(1) }}%</div>
+                      <div class="text-h7">Max: {{ store.state.humidity.todaysMax.toFixed(1) }}%</div>
                     </v-col>
                   </div>
                 </v-col>

@@ -89,7 +89,7 @@ export default defineComponent({
 
     const endOfDay = new Date(currentDate);
     endOfDay.setHours(23, 59, 59, 999);
-    this.store.commit("getTemperatureRange", { type: "temperature_dummy", measuredStart: startOfDay, measuredEnd: endOfDay});
+    this.store.commit("getTemperatureRange", { type: "temperature", measuredStart: startOfDay, measuredEnd: endOfDay});
   }, 
  }
 );
@@ -115,8 +115,8 @@ export default defineComponent({
                     />
                     <div class="text-h2">17°C</div>
                     <v-col class="ml-6">
-                      <div class="text-h7">Min: 4°C</div>
-                      <div class="text-h7">Max: 18°C</div>
+                      <div class="text-h7">Min: {{ store.state.temperature.todaysMin.toFixed(1) }}°C</div>
+                      <div class="text-h7">Max: {{ store.state.temperature.todaysMax.toFixed(1) }}°C</div>
                     </v-col>
                   </div>
                 </v-col>

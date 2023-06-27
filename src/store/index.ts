@@ -95,7 +95,19 @@ export default createStore({
       });
     },
     async fetchForForester(state: State) {
-      await state.fetchForVisitor(state);
+      await GetAreas().then((areas) => (state.areas = areas));
+      await GetTypes().then((types) => (state.data.types = types));
+      state.selectedArea = state.areas[0].areaId;
+      await GetData(state.data.types[0], state.areas[0].meshNodeUUIDs).then((data) => {
+        state.temperature.latest = data
+          ? (data as Data).data[0].measurements[0]
+          : undefined;
+      });
+      await GetData(state.data.types[1], [state.selectedArea]).then((data) => {
+        state.humidity.latest = data
+          ? (data as Data).data[0].measurements[0]
+          : undefined;
+      });
       await GetNodes().then((nodes) => (state.nodes = nodes));
     },
     async fetchForAdmin(state: State) {
@@ -121,7 +133,7 @@ export default createStore({
           
           GetMe().then(me => state.user.role = me.role.name).then(() => {
               if (state.user.role === "admin") router.push({ path: "/admin" });
-              else if (state.user.role === "forester") router.push({path: "/forester"});
+              else if (state.user.role === "förster") router.push({path: "/forester"});
               state.user.loginDialogOpen = false;
           });
         } else {
@@ -147,7 +159,7 @@ export default createStore({
           state.sessionExpired = false;
           state.user.loggedIn = true;
           if (me.role.name === "admin") router.push("/admin");
-          else if (me.role.name === "forester") router.push("/forester");
+          else if (me.role.name === "förster") router.push("/forester");
         } else {          
           state.sessionExpired = true;
           state.user.loggedIn = false;

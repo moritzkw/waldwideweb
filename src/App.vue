@@ -37,7 +37,6 @@ export default defineComponent({
     };
   },
   mounted() {
-    console.debug("App mounted")
     this.$store.commit("checkLogin");
   },
 

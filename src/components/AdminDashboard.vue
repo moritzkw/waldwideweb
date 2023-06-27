@@ -66,9 +66,6 @@ export default defineComponent({
     }
   },
   methods: {
-    Edit(user: any) {
-      console.debug("edit " + user.email);
-    },
     PostUpdate() {
       const reader = new FileReader();
       reader.onload = () => {

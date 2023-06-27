@@ -48,7 +48,7 @@ export default defineComponent({
   watch: {
     dialogOpen(dialogOpen: boolean) {
       if (!dialogOpen) return;
-      console.debug("Humidity Dialog clicked...")
+      
       var currentDate = new Date(); // Get the current date and time
       var sevenDaysAgo = new Date(currentDate.getTime() - 7 * 24 * 60 * 60 * 1000);
 

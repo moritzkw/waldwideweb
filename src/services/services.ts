@@ -79,7 +79,7 @@ export async function AddUser(username: string, password: string, roleId: number
     username: username,
     password: password,
     roleId: roleId
-  }, config)
+  }, config())
     .then(response => response.status === 201)
     .catch(() => false);
 }

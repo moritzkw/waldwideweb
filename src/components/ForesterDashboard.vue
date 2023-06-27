@@ -4,9 +4,10 @@ import Weather from "./Weather.vue";
 import Temperature from "./Temperature.vue";
 import { GChart } from "vue-google-charts";
 import { GoogleMap, Marker, InfoWindow } from "vue3-google-map";
+import DataCardVue from "./DataCard.vue";
 
 export default defineComponent({
-  components: { Weather, GChart, Temperature, GoogleMap, Marker, InfoWindow },
+  components: { Weather, GChart, Temperature, GoogleMap, Marker, InfoWindow, DataCardVue },
   name: "ForesterDashboard",
 
   data() {
@@ -118,41 +119,7 @@ export default defineComponent({
 
 <template>
   <v-container>
-    <v-row>
-      <v-col>
-        <v-card elevation="5">
-          <v-container fluid>
-            <v-row justify="space-between">
-              <v-col>
-                <Temperature></Temperature>
-              </v-col>
-              <v-col>
-                <v-card class="card" title="Luftfeuchtigkeit" elevation="0">
-                  <div class="d-flex align-center">
-                    <v-icon icon="mdi-water-outline" color="blue" size="x-large" />
-                    <div class="text-h2 ml-4">
-                      {{
-                        store.state.humidity.latest
-                        ? store.state.humidity.latest.value
-                        : "-"
-                      }}%
-                    </div>
-                  </div>
-                </v-card>
-              </v-col>
-              <v-col>
-                <v-card class="card" title="Wind" elevation="0">
-                  <div class="d-flex align-center">
-                    <v-icon icon="mdi-weather-windy" color="grey" size="x-large" />
-                    <div class="text-h2 ml-4">{{ "-" }} km/h</div>
-                  </div>
-                </v-card>
-              </v-col>
-            </v-row>
-          </v-container>
-        </v-card>
-      </v-col>
-    </v-row>
+    <DataCardVue></DataCardVue>
     <v-row>
       <v-col>
         <v-card class="card" title="Sensoren" :elevation="5">

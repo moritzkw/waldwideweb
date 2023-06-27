@@ -9,6 +9,7 @@ import {
   GetRoles,
   GetTypes,
   GetUsers,
+  UpdateNode,
   UpdateUser,
   login,
   logout,
@@ -17,6 +18,7 @@ import { State } from "vue";
 import { AggregateFunction } from "../types/aggregateFunction";
 import { Data } from "../types/data";
 import { User } from "../types/user";
+import { Node } from "../types/node";
 
 export default createStore({
   state() {
@@ -130,5 +132,10 @@ export default createStore({
         GetUsers().then((users) => (state.users = users))
       );
     },
+    updateNode(state: State, data: {node: Node, latitude: number, longitude: number}) {
+      UpdateNode(data.node, data.latitude, data.longitude).then(() => {
+        GetNodes().then(nodes => state.nodes = nodes);
+      })
+    }
   },
 });

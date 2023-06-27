@@ -6,6 +6,7 @@ import { AggregateFunction } from "../types/aggregateFunction";
 import { AggregatedData } from "../types/aggregatedData";
 import { Area } from "../types/area";
 import { User } from "../types/user";
+import { Node } from "../types/node";
 
 const BACKEND_API_URL = "https://backend.mdma.haveachin.de";
 const config = {
@@ -155,4 +156,13 @@ export async function GetAreas(): Promise<Area[]> {
   return await axios.get(BACKEND_API_URL + "/areas", config)
     .then(response => response.data)
     .catch(() => []);
+}
+
+export async function UpdateNode(node: Node, latitude: number, longitude: number): Promise<boolean> {
+  return await axios.put(BACKEND_API_URL + `/mesh-nodes/${node.uuid}`, {
+    latitude: latitude,
+    longitude: longitude
+  }, config)
+    .then(response => response.status === 200)
+    .catch(() => false);
 }

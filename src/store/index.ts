@@ -17,6 +17,7 @@ import { State } from "vue";
 import { AggregateFunction } from "../types/aggregateFunction";
 import { Data } from "../types/data";
 import { User } from "../types/user";
+import { Area } from "../types/area";
 
 export default createStore({
   state(): State {
@@ -41,7 +42,7 @@ export default createStore({
       selectedArea: "",
       users: [],
       nodes: [],
-      areas: [],
+      areas: new Array<Area>(),
       data: {
         types: [],
       },
@@ -50,12 +51,13 @@ export default createStore({
   },
   mutations: {
     async fetchData(state: State) {
-      await GetData(state.data.types[0], [state.selectedArea]).then((data) => {
+      const selectedArea = state.areas.find((area: Area) => area.areaId === state.selectedArea);
+      await GetData(state.data.types[0], selectedArea.meshNodeUUIDs).then((data) => {
         state.temperature.latest = data
           ? (data as Data).data[0].measurements[0]
           : undefined;
       });
-      await GetData(state.data.types[1], [state.selectedArea]).then((data) => {
+      await GetData(state.data.types[1], selectedArea.meshNodeUUIDs).then((data) => {
         state.humidity.latest = data
           ? (data as Data).data[0].measurements[0]
           : undefined;
@@ -67,13 +69,13 @@ export default createStore({
       });
     },
     async fetchAll(state: State) {
+      await GetAreas().then((areas) => (state.areas = areas));
       await GetTypes().then((types) => (state.data.types = types));
       await GetUsers().then((users) => (state.users = users));
       await GetRoles().then((roles) => (state.roles = roles));
       await GetNodes().then((nodes) => (state.nodes = nodes));
-      state.selectedArea = state.nodes[0].uuid;
-      await GetAreas().then((areas) => (state.areas = areas));
-      await GetData(state.data.types[0], [state.selectedArea]).then((data) => {
+      state.selectedArea = state.areas[0].areaId;
+      await GetData(state.data.types[0], state.areas[0].meshNodeUUIDs).then((data) => {
         state.temperature.latest = data
           ? (data as Data).data[0].measurements[0]
           : undefined;

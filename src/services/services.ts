@@ -111,6 +111,7 @@ export async function GetData(
   measuredStart?: Date,
   measuredEnd?: Date
 ): Promise<Data> {
+  console.debug(meshNodes)
   let requestUrl = `${BACKEND_API_URL}/data?type=${type}`;
   if (meshNodes)
     meshNodes.forEach((meshNode) => (requestUrl += `&meshNodes=${meshNode}`));

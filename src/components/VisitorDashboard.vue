@@ -10,10 +10,11 @@ import { Area } from "../types/area";
 import { ref } from 'vue';
 import Chart from 'chart.js/auto';
 import DataCardVue from "./DataCard.vue";
+import AboutCardVue from "./AboutCard.vue";
 
 // Logo
 export default defineComponent({
-  components: { Weather, GChart, Temperature, Humidity, DataCardVue },
+  components: { Weather, GChart, Temperature, Humidity, DataCardVue, AboutCardVue },
   name: "VisitorDashboard",
 
   data() {
@@ -149,6 +150,7 @@ export default defineComponent({
         </v-card>
       </v-col>
     </v-row>
+    <AboutCardVue></AboutCardVue>
   </v-container>
 </template>
 

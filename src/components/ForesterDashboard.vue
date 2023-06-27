@@ -5,9 +5,10 @@ import Temperature from "./Temperature.vue";
 import { GChart } from "vue-google-charts";
 import { GoogleMap, Marker, InfoWindow } from "vue3-google-map";
 import DataCardVue from "./DataCard.vue";
+import AboutCardVue from "./AboutCard.vue";
 
 export default defineComponent({
-  components: { Weather, GChart, Temperature, GoogleMap, Marker, InfoWindow, DataCardVue },
+  components: { Weather, GChart, Temperature, GoogleMap, Marker, InfoWindow, DataCardVue, AboutCardVue },
   name: "ForesterDashboard",
 
   data() {
@@ -194,6 +195,7 @@ export default defineComponent({
         <!-- <weather></weather> -->
       </v-col>
     </v-row>
+    <AboutCardVue></AboutCardVue>
   </v-container>
 </template>
 

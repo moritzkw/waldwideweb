@@ -1,3 +1,36 @@
+# WaldWideWeb
+
+## Features
+### Allgemein
+- Dark & Light Mode über Icon oben rechts
+- Responsivität: Alle Seiten können unabhängig von der Bildschirmgröße dargestellt werden
+### Besucher Dashboard
+- Kein Login für das Besucher Dashboard benötigt (Landingpage)
+- Teperature & Luftfeuchtigkeit mit Daten aus dem Backend dargestellt
+- Wind & Besucherzahl werden angebunden, sobald die Sensoren die Werte zur Verfügung stellen
+- Detailansicht für Temperature & Luftfeuchtigkeit durch Klick verfügbar
+- In Detailsansicht Tagesverlauf & Tagesdurchschnitt, Minimal- und Maximalwert der Messwerte für die letzten 7 Tage sichtbar
+- Login über icon oben Rechts möglich
+### Förster Dashboard
+- Nur für angemeldete Förster erreichbar
+- Über Icon oben rechts Abmeldung möglich
+- Bei erneutem Aufruf der Seite ist man dank Cookies immernoch angemeldet
+- Selbe Datendarstellung wie im Besucher Dashboard
+- Karte mit Übersicht aller Sensoren
+- Durch Klicken auf die Sensor-Marker auf der Karte werden Sensor Details in Popup angezeigt
+- Über dieses Popup kann die Position bearbeitet werden
+- Dabei kann der Positions-Marker auf der Karte verschoben und die neue Position mit Klick auf den Button gespeichert werden
+### Admin Dashboard
+- Nur für angemeldete Admins erreichbar
+- Über Icon oben rechts Abmeldung möglich
+- Bei erneutem Aufruf der Seite ist man dank Cookies immernoch angemeldet
+- Anzeige der aktuellen Firmware-Version mit dessen Upload-Datum
+- Durch Datei-Input kann eine neue Firmware in Form einer binär-Datei mit der geswünschten Versionsnummer hochgeladen werden
+- Anzeige aller Nutzer mit deren zugewiesen Nutzerrolle in einer Liste
+- Über Button kann ein neuer Nutzer hinzugefügt werden
+- Jeder Nutzer kann über das entsprechende Icon gelöscht werden
+- Über ein anders Icon kann der Nutzer bearbeitet werden (Nutzername, Passwort und Nutzerrolle)
+
 # Vue 3 + TypeScript + Vite
 
 [![status-badge](https://ci.haveachin.de/api/badges/haveachin/waldwideweb/status.svg)](https://ci.haveachin.de/haveachin/waldwideweb)

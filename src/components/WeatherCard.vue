@@ -69,7 +69,7 @@ export default defineComponent({
                     color="grey"
                     size="x-large"
                   />
-                  <div class="text-h4 ml-4">Bald verfügbar</div>
+                  <div class="text-h2 ml-4">{{ "-" }} km/h</div>
                 </div>
               </v-card>
             </v-col>

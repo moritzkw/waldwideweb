@@ -5,5 +5,5 @@ export enum AggregateFunction {
     MAXIMUM = "maximum",
     SUM = "sum",
     MEDIAN = "median",
-    AVERAE = "average",
+    AVERAGE = "average",
 }

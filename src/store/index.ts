@@ -26,21 +26,24 @@ import { Update } from "../types/update";
 import { Role } from "../types/role";
 import router from "../router";
 import { Node } from "../types/node";
+import { AggregateMeasurement } from "../types/aggregatedData";
 
 export default createStore({
   state(): State {
     return {
       temperature: {
         latest: null,
-        lastWeekHistory: new Array<Measurement>(),
-        todaysMin: null,
-        todaysMax: null,
+        weekHistory: new Array<Array<Measurement>>(),
+        weekDayHistory: new Array<Array<Measurement>>(),
+        weekMins: new Array<number>(),
+        weekMaxes: new Array<number>()
       },
       humidity: {
         latest: null,
-        lastWeekHistory: new Array<Measurement>(),
-        todaysMin: null,
-        todaysMax: null,
+        weekHistory: new Array<Array<Measurement>>(),
+        weekDayHistory: new Array<Array<Measurement>>(),
+        weekMins: new Array<number>(),
+        weekMaxes: new Array<number>()
       },
       user: {
         sessionExpired: false,
@@ -73,16 +76,10 @@ export default createStore({
         state.temperature.latest = data
           ? (data as Data).data[0].measurements[0]
           : undefined;
-        state.temperature.lastWeekHistory = data
-          ? (data as Data).data
-          : undefined;
       });
       await GetData(state.data.types[3], [selectedArea.meshNodeUUIDs[0]], nowMinusOneWeek, now).then((data) => {
         state.humidity.latest = data
           ? (data as Data).data[0].measurements[0]
-          : undefined;
-        state.humidity.lastWeekHistory = data
-          ? (data as Data).data
           : undefined;
       });
     },
@@ -208,9 +205,104 @@ export default createStore({
         data.measuredStart,
         data.measuredEnd
       ).then((data) => {
-        state.temperature.lastWeekHistory = data
+        state.temperature.weekHistory = data
           ? (data as Data).data[0].measurements
           : [];
+      });
+    },
+    async fetchTemperatureChartData(
+      state: State,
+    ) {
+      const selectedArea = state.areas.find((area: Area) => area.areaId === state.selectedArea);
+
+      const today = new Date();
+      var start = new Date(today.getTime() - (7 * 24 * 60 * 60 * 1000));
+      start.setHours(0, 0, 0, 0)
+      const end = new Date(today.setHours(23, 59, 59, 999));
+      
+      GetAggregatedData(
+        "temperature",
+        AggregateFunction.AVERAGE,
+        selectedArea.meshNodeUUIDs,
+        start,
+        end,
+        "4h"
+      ).then((data) => {
+        for (var i = 0; i < 7; i++) {
+          state.temperature.weekHistory[i] = data.samples.slice(i * 6, i * 6 + 6);
+        }
+      });
+    },
+    async fetchHumidityChartData(
+      state: State,
+    ) {
+      const selectedArea = state.areas.find((area: Area) => area.areaId === state.selectedArea);
+
+      const today = new Date();
+      var start = new Date(today.getTime() - (7 * 24 * 60 * 60 * 1000));
+      start.setHours(0, 0, 0, 0)
+      const end = new Date(today.setHours(23, 59, 59, 999));
+      
+      GetAggregatedData(
+        "humidity",
+        AggregateFunction.AVERAGE,
+        selectedArea.meshNodeUUIDs,
+        start,
+        end,
+        "4h"
+      ).then((data) => {
+        for (var i = 0; i < 7; i++) {
+          state.humidity.weekHistory[i] = data.samples.slice(i * 6, i * 6 + 6);
+        }
+      });
+    },
+    async fetchTemperatureDayData(
+      state: State,
+    ) {
+      const selectedArea = state.areas.find((area: Area) => area.areaId === state.selectedArea);
+
+      const today = new Date();
+      var start = new Date(today.getTime() - (7 * 24 * 60 * 60 * 1000));
+      start.setHours(0, 0, 0, 0)
+      const end = new Date(today.setHours(23, 59, 59, 999));
+      
+      GetAggregatedData(
+        "temperature",
+        AggregateFunction.AVERAGE,
+        selectedArea.meshNodeUUIDs,
+        start,
+        end,
+        undefined,
+        7
+      ).then((data) => {
+        state.temperature.weekDayHistory = data.samples.reduce((values: number[], sample: AggregateMeasurement) => {
+          return values.concat(parseFloat(sample.value));
+        }, [] as number[]);
+      });
+    },
+    async fetchHumidityDayData(
+      state: State,
+    ) {
+      const selectedArea = state.areas.find((area: Area) => area.areaId === state.selectedArea);
+
+      const today = new Date();
+      var start = new Date(today.getTime() - (7 * 24 * 60 * 60 * 1000));
+      start.setHours(0, 0, 0, 0)
+      const end = new Date(today.setHours(23, 59, 59, 999));
+      
+      GetAggregatedData(
+        "humidity",
+        AggregateFunction.AVERAGE,
+        selectedArea.meshNodeUUIDs,
+        start,
+        end,
+        undefined,
+        7
+      ).then((data) => {
+          state.humidity.weekDayHistory = data.samples.reduce((values: number[], sample: AggregateMeasurement) => {
+            return values.concat(parseFloat(sample.value));
+          }, [] as number[]);
+        // }
       });
     },
     deleteUser(state: State, user: User) {
@@ -221,28 +313,45 @@ export default createStore({
         })
       );
     },
-    async getTemperatureRange(
+    async getMinMax(
       state: State,
-      data: { type: string; measuredStart: Date; measuredEnd: Date }
+      type: string
     ) {
+      const selectedArea = state.areas.find((area: Area) => area.areaId === state.selectedArea);
+
+      const today = new Date();
+      var start = new Date(today.getTime() - (7 * 24 * 60 * 60 * 1000));
+      start.setHours(0, 0, 0, 0)
+      const end = new Date(today.setHours(23, 59, 59, 999));
+
       GetAggregatedData(
-        data.type,
+        type,
         AggregateFunction.MINIMUM,
-        undefined,
-        data.measuredStart,
-        data.measuredEnd,
-        undefined,
-        1
-      ).then(min => state.temperature.todaysMin = parseFloat(min.samples[0].value));
+        selectedArea.meshNodeUUIDs,
+        start,
+        end,
+        "24h"
+      ).then(mins => {
+        const res = mins.samples.reduce((samples: number[], sample: AggregateMeasurement) => {
+          return samples.concat(parseFloat(sample.value));
+        }, [] as number[]);
+        if (type === "temperature") state.temperature.weekMins = res;
+        else if (type === "humidity") state.humidity.weekMins = res;
+      }),
       GetAggregatedData(
-        data.type,
+        type,
         AggregateFunction.MAXIMUM,
-        undefined,
-        data.measuredStart,
-        data.measuredEnd,
-        undefined,
-        1
-      ).then(max => state.temperature.todaysMax = parseFloat(max.samples[0].value));
+        selectedArea.meshNodeUUIDs,
+        start,
+        end,
+        "24h"
+      ).then(maxes => {
+        const res = maxes.samples.reduce((samples: number[], sample: AggregateMeasurement) => {
+          return samples.concat(parseFloat(sample.value));
+        }, [] as number[]);
+        if (type === "temperature") state.temperature.weekMaxes = res;
+        else if (type === "humidity") state.humidity.weekMaxes = res;
+      })
     },
     async getHumidityRange(
       state: State,

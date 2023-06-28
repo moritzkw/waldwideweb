@@ -1,10 +1,12 @@
 <script lang="ts">
-import { defineComponent } from "vue";
+import { defineComponent, State } from "vue";
 import Weather from "./Weather.vue";
 import Temperature from "./Temperature.vue";
 import { GChart } from "vue-google-charts";
 import { GoogleMap, Marker, InfoWindow } from "vue3-google-map";
 import WeatherCardVue from "./WeatherCard.vue";
+import { Store } from "vuex/types/index.js";
+import { Area } from "../types/area";
 
 export default defineComponent({
   components: { Weather, GChart, Temperature, GoogleMap, Marker, InfoWindow, WeatherCardVue },
@@ -105,6 +107,9 @@ export default defineComponent({
         long: event.latLng.lng(),
       };
     },
+    updateData() {
+      this.store.commit("fetchForVisitor");
+    },
   },
   mounted() {
     this.store.commit("fetchForForester");
@@ -112,6 +117,17 @@ export default defineComponent({
   computed: {
     store() {
       return this.$store;
+    },
+    areas() {
+      if (this.store.state.areas) {
+        return (this.store as Store<State>).state.areas.slice().reduce(
+          (areas: Area[], area: Area) => areas.concat(area.areaId),
+          [] as Area[]
+        );
+        // return (store.state.areas as Area[]).reduce((areas: string[], area: Area) => areas.concat(area.areaId.toString()), [] as string[]);
+      } else {
+        return [];
+      }
     },
   },
 });
@@ -189,7 +205,13 @@ export default defineComponent({
             Wählen Sie das Waldgebiet aus, für das Sie die aktuellen Messwerte
             anzeigen wollen.
           </p>
-          <v-combobox class="px-6" label="Waldgebiet auswählen" :items="forestAreas"></v-combobox>
+          <v-select
+            v-model="store.state.selectedArea"
+            class="px-6"
+            label="Waldgebiet auswählen"
+            :items="areas"
+            @update:modelValue="updateData"
+          ></v-select>
         </v-card>
         <!-- <weather></weather> -->
       </v-col>

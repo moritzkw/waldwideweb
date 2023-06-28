@@ -132,7 +132,7 @@ export default defineComponent({
         <div class="ml-4 font-italic">Zuletzt aktualisiert: {{ store.state.usersLastUpdated ? store.state.usersLastUpdated.toLocaleString() : "nicht bekannt" }}</div>
         <v-list class="mt-4">
           <v-container class="pa-0" v-bind="user" v-for="user in users" :key="user.username" fluid>
-            <v-list-item :key="user.username" :title="user.username" >
+            <v-list-item :key="user.username" :title="user.username" :subtitle="store.state.roles.find(role => role.id === user.roleId).name">
               <template v-slot:append>
                 <EditUserDialog :user="user"/>
                 <v-spacer></v-spacer>

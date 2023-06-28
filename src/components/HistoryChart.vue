@@ -48,10 +48,13 @@ export default defineComponent({
   computed: {
     chartData() {
       return {
-        labels: ["0 Uhr", "6 Uhr", "12 Uhr", "18 Uhr"],
+        labels: ["0 Uhr", "4 Uhr", "8 Uhr", "12 Uhr", "16 Uhr", "20 Uhr", "24 Uhr"],
         datasets: [
           {
-            data: [17, 21, 22, 16],
+            data: this.data?.reduce((items: (number|null)[], item: Measurement) => {
+              const value = parseFloat(item.value);
+              return items.concat(value === 0 ? null : value);
+            }, [] as number[]),
             borderColor: "rgba(46, 125, 50, 1)",
           },
         ],

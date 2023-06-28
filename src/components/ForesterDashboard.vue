@@ -4,15 +4,17 @@ import Weather from "./Weather.vue";
 import Temperature from "./Temperature.vue";
 import { GChart } from "vue-google-charts";
 import { GoogleMap, Marker, InfoWindow } from "vue3-google-map";
+import WeatherCardVue from "./WeatherCard.vue";
 
 export default defineComponent({
-  components: { Weather, GChart, Temperature, GoogleMap, Marker, InfoWindow },
+  components: { Weather, GChart, Temperature, GoogleMap, Marker, InfoWindow, WeatherCardVue },
   name: "ForesterDashboard",
 
   data() {
     return {
-      center: { lat: 49.121945, lng: 9.211429 },
-      // Array will be automatically processed with visualization.arrayToDataTable function
+      editingNode: null as Node | null,
+      editingPosition: null as { lat: number; long: number } | null,
+      center: { lat: 49.118617, lng: 9.254468 },
       forestAreas: ["Wald A", "Wald B", "Wald C", "Wald D", "Wald E"],
       chartData: [
         ["Tag", "Besucher"],
@@ -46,8 +48,7 @@ export default defineComponent({
         },
         // curveType: 'function'
       },
-      hoveredNode: null as any,
-      infoWindowPosition: null as null | { lat: number; lng: number; },
+      infoWindowPosition: null as null | { lat: number; lng: number },
       infoWindowOptions: {},
       infoWindowNode: null as null | { [key: string]: any },
       mapCenter: null,
@@ -56,10 +57,8 @@ export default defineComponent({
   },
 
   methods: {
-
     openInfoWindow(node: any) {
       this.infoWindowNode = node;
-      // Set the position and options of the info window based on the marker's position
       this.infoWindowPosition = { lat: node.latitude, lng: node.longitude };
       this.infoWindowOptions = { maxWidth: 320, maxHeight: 320 };
     },
@@ -68,44 +67,45 @@ export default defineComponent({
       const latitude = parseFloat(node.latitude);
       const longitude = parseFloat(node.longitude);
 
-      // Überprüfe, ob die Werte numerisch sind
       if (isNaN(latitude) || isNaN(longitude)) {
-        console.error('Ungültige Längen- oder Breitengrade:', node.latitude, node.longitude);
+        console.error(
+          "Ungültige Längen- oder Breitengrade:",
+          node.latitude,
+          node.longitude
+        );
         return null;
       }
 
-      // Erstelle die Optionen für den Marker
       const markerOptions = {
         position: { lat: latitude, lng: longitude },
-        isHovered: this.isNodeHovered(node),
+        draggable: this.isNodeDraggable(node),
       };
 
       return markerOptions;
     },
-
-    isNodeHovered(node: any) {
-      return this.hoveredNode !== null && this.hoveredNode !== undefined && this.hoveredNode.uuid === node.uuid;
+    isNodeDraggable(node: any) {
+      return this.editingNode === node;
     },
-
-    setHoveredNode(node: any) {
-      this.hoveredNode = node;
+    handlePositionButtonClick(node: any) {
+      if (this.editingNode === node) {
+        this.store.commit("updateNode", {
+          node: node,
+          latitude: this.editingPosition.lat,
+          longitude: this.editingPosition.long,
+        });
+        this.editingNode = null;
+        this.editingPosition = null;
+      } else {
+        this.editingNode = node;
+      }
     },
-    clearHoveredNode() {
-      this.hoveredNode = null;
-    },
-    handleNodeClick(node: any) {
-      // Führe hier die gewünschte Logik aus, wenn auf ein Node geklickt wird
-      console.log('Node clicked:', node);
-
-      
-    },
-
-    handleNodeHover(node: any) {
-      // Setze den gehoverten Node im Zustand der Komponente
-      this.hoveredNode = node;
+    handleDragEnd(event: any) {
+      this.editingPosition = {
+        lat: event.latLng.lat(),
+        long: event.latLng.lng(),
+      };
     },
   },
-
   mounted() {
     this.store.commit("fetchForForester");
   },
@@ -114,65 +114,50 @@ export default defineComponent({
       return this.$store;
     },
   },
-},
-);
+});
 </script>
 
 <template>
   <v-container>
-    <v-row>
-      <v-col>
-        <v-card elevation="5">
-          <v-container fluid>
-            <v-row justify="space-between">
-              <v-col>
-                <Temperature></Temperature>
-              </v-col>
-              <v-col>
-                <v-card class="card" title="Luftfeuchtigkeit" elevation="0">
-                  <div class="d-flex align-center">
-                    <v-icon icon="mdi-water-outline" color="blue" size="x-large" />
-                    <div class="text-h2 ml-4">
-                      {{ store.state.humidity.latest ? store.state.humidity.latest.value : "-" }}%
-                    </div>
-                  </div>
-                </v-card>
-              </v-col>
-              <v-col>
-                <v-card class="card" title="Wind" elevation="0">
-                  <div class="d-flex align-center">
-                    <v-icon icon="mdi-weather-windy" color="grey" size="x-large" />
-                    <div class="text-h2 ml-4">
-                      {{ "-" }} km/h
-                    </div>
-                  </div>
-                </v-card>
-              </v-col>
-            </v-row>
-          </v-container>
-        </v-card>
-      </v-col>
-    </v-row>
+    <WeatherCardVue></WeatherCardVue>
     <v-row>
       <v-col>
         <v-card class="card" title="Sensoren" :elevation="5">
           <v-container>
             <GoogleMap api-key="AIzaSyBiaS391syegtj4i98-M0E7ylzmItDTDsc" style="height: 500px" :center="center"
-              :zoom="15">
-
-              <!-- Iteriere über die Nodes und erstelle Marker -->
-              <Marker v-for="node in store.state.nodes" :key="node.id" :options="getMarkerOptions(node)"
-                @click="handleNodeClick(node)" @mouseover="handleNodeHover(node)" @mouseout="clearHoveredNode">
-                <InfoWindow  :options="infoWindowOptions">
+              :zoom="14">
+              <Marker v-for="node in store.state.nodes" :key="node.uuid" :options="getMarkerOptions(node)"
+                @dragend="handleDragEnd">
+                <InfoWindow :options="infoWindowOptions">
                   <div>
-                    <p><strong>Erstellt:</strong> {{ new Date(node.createdAt).toLocaleString() }}</p>
+                    <div>
+                      <h3 v-bind:title="node.uuid">Gerät ID:</h3>
+                      <p>{{ node.uuid }}</p>
+                    </div>
+                    <br />
+                    <p>
+                      <strong>Erstellt:</strong>
+                      {{ new Date(node.createdAt).toLocaleString() }}
+                    </p>
+                    <p v-if="node.updatedAt">
+                      <strong>Aktualisiert:</strong>
+                      {{ new Date(node.updatedAt).toLocaleString() }}
+                    </p>
                     <p><strong>Längengrad:</strong> {{ node.latitude }}</p>
                     <p><strong>Breitengrad:</strong> {{ node.longitude }}</p>
-                    <p><strong>UUID:</strong> {{ node.uuid }}</p>
-                    <v-btn>Position bearbeiten</v-btn>
+                    <br />
+                    <div class="text-center">
+                      <v-btn variant="tonal" size="small" block rounded="xl" @click="handlePositionButtonClick(node)">
+                        {{
+                          editingNode === node
+                          ? "Position Speichern"
+                          : "Position bearbeiten"
+                        }}
+                      </v-btn>
+                    </div>
                   </div>
-                </InfoWindow> </Marker>
-
+                </InfoWindow>
+              </Marker>
             </GoogleMap>
           </v-container>
         </v-card>

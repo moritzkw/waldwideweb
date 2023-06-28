@@ -9,10 +9,12 @@ import { Store } from "vuex/types/index.js";
 import { Area } from "../types/area";
 import { ref } from 'vue';
 import Chart from 'chart.js/auto';
+import WeatherCardVue from "./WeatherCard.vue";
+import AboutCardVue from "./AboutCard.vue";
 
 // Logo
 export default defineComponent({
-  components: { Weather, GChart, Temperature, Humidity},
+  components: { Weather, GChart, Temperature, Humidity, WeatherCardVue, AboutCardVue },
   name: "VisitorDashboard",
 
   data() {
@@ -84,7 +86,7 @@ export default defineComponent({
     },
     areas() {
       if (store.state.areas) {
-        return (store as Store<State>).state.areas.reduce(
+        return (store as Store<State>).state.areas.slice().reduce(
           (areas: Area[], area: Area) => areas.concat(area.areaId),
           [] as Area[]
         );
@@ -96,7 +98,7 @@ export default defineComponent({
   },
   methods: {
     updateData() {
-      store.commit("fetchData");
+      store.commit("fetchForVisitor");
     },
   },
 });
@@ -112,58 +114,7 @@ export default defineComponent({
     @click="store.state.sessionExpired = false"
   ></v-alert>
   <v-container>
-    <v-row>
-      <v-col>
-        <v-card elevation="5">
-          <v-container fluid>
-            <v-row justify="space-between">
-              <v-col>
-                <v-card class="card" title="Temperatur" :elevation="0">
-                  <div class="d-flex align-center">
-                    <v-icon
-                      icon="mdi-white-balance-sunny"
-                      color="yellow"
-                      size="x-large"
-                    />
-                    <div class="text-h2 ml-4">
-                      {{ store.state.temperature.latest ? store.state.temperature.latest.value : "-" }}°C
-                    </div>
-                  </div>
-                  <Temperature></Temperature>
-                </v-card>
-              </v-col>
-              <v-col>
-                <v-card class="card" title="Luftfeuchtigkeit" elevation="0">
-                  <div class="d-flex align-center">
-                    <v-icon icon="mdi-water-outline" color="blue" size="x-large" />
-                    <div class="text-h2 ml-4">
-                      {{
-                        store.state.humidity.latest
-                          ? store.state.humidity.latest.value
-                          : "-"
-                      }}%
-                    </div>
-                  </div>
-                  <Humidity></Humidity>
-                </v-card>
-              </v-col>
-              <v-col>
-                <v-card class="card" title="Wind" elevation="0">
-                  <div class="d-flex align-center">
-                    <v-icon
-                      icon="mdi-weather-windy"
-                      color="grey"
-                      size="x-large"
-                    />
-                    <div class="text-h2 ml-4">{{ "-" }} km/h</div>
-                  </div>
-                </v-card>
-              </v-col>
-            </v-row>
-          </v-container>
-        </v-card>
-      </v-col>
-    </v-row>
+    <WeatherCardVue></WeatherCardVue>
     <v-row>
       <v-col>
         <v-card class="card" title="Besucherzahl" :elevation="5">
@@ -171,10 +122,9 @@ export default defineComponent({
             <v-row>
               <v-col>
                 <div class="d-flex align-center">
-                  <div class="text-h2">
-                    72<!-- {{ chartData.datasets[0].data[chartData.datasets[0].data.length - 1] }} -->
+                  <div class="text-h4">
+                    Bald verfügbar
                   </div>
-                  <v-icon icon="mdi-arrow-top-right ml-4" color="green" />
                 </div>
               </v-col>
               <v-col fluid>
@@ -199,6 +149,7 @@ export default defineComponent({
         </v-card>
       </v-col>
     </v-row>
+    <AboutCardVue></AboutCardVue>
   </v-container>
 </template>
 

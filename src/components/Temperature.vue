@@ -1,8 +1,6 @@
 <script lang="ts">
 import { defineComponent } from "vue";
-import { GChart } from "vue-google-charts";
-import { ref } from 'vue';
-import Chart from 'chart.js/auto';
+import { ref } from "vue";
 import HistoryChart from "./HistoryChart.vue";
 
 export default defineComponent({
@@ -11,16 +9,8 @@ export default defineComponent({
     return {
       chartRef: ref(null),
       dialogOpen: false,
-      weekDays: this.fillWeekDays(),
+      weekDays: this.fillWeekDays() as Array<string>,
       tab: null,
-      chartData: [
-        ["Uhrzeit", "Temperatur"],
-        ["0 Uhr", 4],
-        ["6 Uhr", 10],
-        ["12 Uhr", 15],
-        ["18 Uhr", 17],
-        ["24 Uhr", 11],
-      ],
       chartOptions: {
         chart: {
           title: "Company Performance",
@@ -48,13 +38,16 @@ export default defineComponent({
   watch: {
     dialogOpen(dialogOpen: boolean) {
       if (!dialogOpen) return;
-
-      console.debug("Temperature Dialog clicked...")
       var currentDate = new Date(); // Get the current date and time
-      var sevenDaysAgo = new Date(currentDate.getTime() - 7 * 24 * 60 * 60 * 1000);
-      
-      this.store.commit("fetchChartData", {type: this.store.state.data.types[0], measuredStart: sevenDaysAgo, measuredEnd: currentDate});
-    }
+      const startOfDay = new Date(currentDate);
+      startOfDay.setHours(0, 0, 0, 0);
+
+      const endOfDay = new Date(currentDate);
+      endOfDay.setHours(23, 59, 59, 999);
+      this.store.commit("getMinMax", "temperature");
+      this.store.commit("fetchTemperatureChartData");
+      this.store.commit("fetchTemperatureDayData");
+    },
   },
   computed: {
     store() {
@@ -62,8 +55,8 @@ export default defineComponent({
     },
   },
   methods: {
-    fillWeekDays() {
-      const weekDays = [
+    fillWeekDays(): Array<string> {
+      const weekDays = new Array(
         "Montag",
         "Dienstag",
         "Mittwoch",
@@ -71,7 +64,7 @@ export default defineComponent({
         "Freitag",
         "Samstag",
         "Sonntag",
-      ];
+      );
       let week: string[] = [];
       const today = new Date();
       for (let i = today.getDay() - 7; i < today.getDay(); i++) {
@@ -82,17 +75,9 @@ export default defineComponent({
       return week;
     },
   },
-  mounted(){
-    var currentDate = new Date(); // Get the current date and time
-    const startOfDay = new Date(currentDate);
-    startOfDay.setHours(0, 0, 0, 0);
-
-    const endOfDay = new Date(currentDate);
-    endOfDay.setHours(23, 59, 59, 999);
-    this.store.commit("getTemperatureRange", { type: "temperature", measuredStart: startOfDay, measuredEnd: endOfDay});
-  }, 
- }
-);
+  mounted() {
+  },
+});
 </script>
 
 <template>
@@ -113,15 +98,37 @@ export default defineComponent({
                       color="grey"
                       size="x-large"
                     />
-                    <div class="text-h2">17°C</div>
+                    <div class="text-h2">
+                      {{
+                        parseFloat(
+                          store.state.temperature.weekDayHistory[weekDays.findIndex(weekDay => weekDay === day)]
+                        ).toFixed(1)
+                      }}°C
+                    </div>
                     <v-col class="ml-6">
-                      <div class="text-h7">Min: {{ store.state.temperature.todaysMin.toFixed(1) }}°C</div>
-                      <div class="text-h7">Max: {{ store.state.temperature.todaysMax.toFixed(1) }}°C</div>
+                      <div class="text-h7">
+                        Min:
+                        {{
+                          store.state.temperature.weekMins && store.state.temperature.weekMins[weekDays.findIndex(weekDay => weekDay === day)]
+                            ? store.state.temperature.weekMins[weekDays.findIndex(weekDay => weekDay === day)].toFixed(1)
+                            : "-"
+                        }}°C
+                      </div>
+                      <div class="text-h7">
+                        Max:
+                        {{
+                          store.state.temperature.weekMaxes && store.state.temperature.weekMaxes[weekDays.findIndex(weekDay => weekDay === day)]
+                            ? store.state.temperature.weekMaxes[weekDays.findIndex(weekDay => weekDay === day)].toFixed(1)
+                            : "-"
+                        }}°C
+                      </div>
                     </v-col>
                   </div>
                 </v-col>
                 <v-col>
-                  <HistoryChart :data="store.state.temperature.lastWeekHistory"></HistoryChart>
+                  <HistoryChart
+                    :data="store.state.temperature.weekHistory[weekDays.findIndex(weekDay => weekDay === day)]"
+                  ></HistoryChart>
                 </v-col>
               </v-row>
             </v-container>

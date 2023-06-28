@@ -1,8 +1,6 @@
 <script lang="ts">
 import { defineComponent } from "vue";
-import { GChart } from "vue-google-charts";
 import { ref } from 'vue';
-import Chart from 'chart.js/auto';
 import HistoryChart from "./HistoryChart.vue";
 
 export default defineComponent({
@@ -48,12 +46,18 @@ export default defineComponent({
   watch: {
     dialogOpen(dialogOpen: boolean) {
       if (!dialogOpen) return;
-      console.debug("Humidity Dialog clicked...")
+      
       var currentDate = new Date(); // Get the current date and time
-      var sevenDaysAgo = new Date(currentDate.getTime() - 7 * 24 * 60 * 60 * 1000);
+      const startOfDay = new Date(currentDate);
+      startOfDay.setHours(0, 0, 0, 0);
 
-      this.store.commit("fetchChartData", {type: this.store.state.data.types[0], measuredStart: sevenDaysAgo, measuredEnd: currentDate});
-    }
+      const endOfDay = new Date(currentDate);
+      endOfDay.setHours(23, 59, 59, 999);
+      this.store.commit("getMinMax", "humidity");
+      this.store.commit("fetchHumidityChartData");
+      this.store.commit("fetchHumidityDayData");
+
+      }
   },
   computed: {
     store() {
@@ -61,7 +65,7 @@ export default defineComponent({
     },
   },
   methods: {
-    fillWeekDays() {
+    fillWeekDays(): Array<string> {
       const weekDays = [
         "Montag",
         "Dienstag",
@@ -80,17 +84,7 @@ export default defineComponent({
       // this.tab = week[6];
       return week;
     },
-
   },
-  mounted(){
-    var currentDate = new Date(); // Get the current date and time
-    const startOfDay = new Date(currentDate);
-    startOfDay.setHours(0, 0, 0, 0);
-
-    const endOfDay = new Date(currentDate);
-    endOfDay.setHours(23, 59, 59, 999);
-    this.store.commit("getHumidityRange", { type: "humidity", measuredStart: startOfDay, measuredEnd: endOfDay});
-  }, 
 });
 </script>
 
@@ -108,19 +102,37 @@ export default defineComponent({
                 <v-col>
                   <div class="d-flex align-center">
                     <v-icon
-                      icon="mdi-thermometer"
-                      color="grey"
+                      icon="mdi-water-outline"
+                      color="blue"
                       size="x-large"
                     />
-                    <div class="text-h2">64%</div>
+                    <div class="text-h2">{{ 
+                        parseFloat(
+                          store.state.humidity.weekDayHistory[weekDays.findIndex(weekDay => weekDay === day)]
+                        ).toFixed(1)
+                      }}%</div>
                     <v-col class="ml-6">
-                      <div class="text-h7">Min: {{ store.state.humidity.todaysMin.toFixed(1) }}%</div>
-                      <div class="text-h7">Max: {{ store.state.humidity.todaysMax.toFixed(1) }}%</div>
+                      <div class="text-h7">
+                        Min:
+                        {{
+                          store.state.humidity.weekMins && store.state.humidity.weekMins[weekDays.findIndex(weekDay => weekDay === day)]
+                            ? store.state.humidity.weekMins[weekDays.findIndex(weekDay => weekDay === day)].toFixed(1)
+                            : "-"
+                        }}%
+                      </div>
+                      <div class="text-h7">
+                        Max:
+                        {{
+                          store.state.humidity.weekMaxes && store.state.humidity.weekMaxes[weekDays.findIndex(weekDay => weekDay === day)]
+                            ? store.state.humidity.weekMaxes[weekDays.findIndex(weekDay => weekDay === day)].toFixed(1)
+                            : "-"
+                        }}%
+                      </div>
                     </v-col>
                   </div>
                 </v-col>
                 <v-col>
-                  <HistoryChart :data="store.state.humidity.lastWeekHistory"></HistoryChart>
+                  <HistoryChart :data="store.state.humidity.weekHistory[weekDays.findIndex(weekDay => weekDay === day)]"></HistoryChart>
                 </v-col>
               </v-row>
             </v-container>

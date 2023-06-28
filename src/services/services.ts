@@ -105,6 +105,14 @@ export async function DeleteUser(user: User): Promise<boolean> {
     .catch(() => false);
 }
 
+export async function ChangePassword(user: User, password: string): Promise<boolean> {
+  return await axios.post(BACKEND_API_URL + `/accounts/users/${user.id}/change-password`, {
+    password: password
+  }, config())
+    .then(response => response.status === 204)
+    .catch(() => false);
+}
+
 export async function GetRoles(): Promise<Role[]> {
   return await axios.get(BACKEND_API_URL + "/roles", config())
     .then(response => response.data)

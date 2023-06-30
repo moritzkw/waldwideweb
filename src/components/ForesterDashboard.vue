@@ -59,12 +59,14 @@ export default defineComponent({
   },
 
   methods: {
+    // Info window of each marker and sets new position after editing
     openInfoWindow(node: any) {
       this.infoWindowNode = node;
       this.infoWindowPosition = { lat: node.latitude, lng: node.longitude };
       this.infoWindowOptions = { maxWidth: 320, maxHeight: 320 };
     },
 
+    // Changes lat & long type into float and checks whether if values are invalid 
     getMarkerOptions(node: any) {
       const latitude = parseFloat(node.latitude);
       const longitude = parseFloat(node.longitude);
@@ -124,7 +126,6 @@ export default defineComponent({
           (areas: Area[], area: Area) => areas.concat(area.areaId),
           [] as Area[]
         );
-        // return (store.state.areas as Area[]).reduce((areas: string[], area: Area) => areas.concat(area.areaId.toString()), [] as string[]);
       } else {
         return [];
       }
@@ -133,6 +134,7 @@ export default defineComponent({
 });
 </script>
 
+<!-- Layout of forester dashboard with weather information, map and position of different nodes-->
 <template>
   <v-container>
     <WeatherCardVue></WeatherCardVue>
@@ -140,7 +142,7 @@ export default defineComponent({
       <v-col>
         <v-card class="card" title="Sensoren" :elevation="5">
           <v-container>
-            <GoogleMap api-key="AIzaSyBiaS391syegtj4i98-M0E7ylzmItDTDsc" style="height: 500px" :center="center"
+            <GoogleMap api-key="Add API Key!!" style="height: 500px" :center="center"
               :zoom="14">
               <Marker v-for="node in store.state.nodes" :key="node.uuid" :options="getMarkerOptions(node)"
                 @dragend="handleDragEnd">
@@ -166,8 +168,8 @@ export default defineComponent({
                       <v-btn variant="tonal" size="small" block rounded="xl" @click="handlePositionButtonClick(node)">
                         {{
                           editingNode === node
-                          ? "Position Speichern"
-                          : "Position bearbeiten"
+                          ? "Speichern"
+                          : "Bearbeiten"
                         }}
                       </v-btn>
                     </div>
@@ -213,7 +215,6 @@ export default defineComponent({
             @update:modelValue="updateData"
           ></v-select>
         </v-card>
-        <!-- <weather></weather> -->
       </v-col>
     </v-row>
   </v-container>

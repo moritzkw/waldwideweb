@@ -10,6 +10,8 @@ import { Update } from "../types/update";
 import { Me } from "../types/me";
 import { Node } from "../types/node";
 
+// Backend request for login and logout the users, getting sensor data, getting nodes and general backend informations
+
 const BACKEND_API_URL = "https://backend.mdma.haveachin.de";
 function config() {
   return {
@@ -52,7 +54,7 @@ export async function login(
     ";path=/";
   return response;
 }
-
+ 
 export async function logout(): Promise<boolean> {
   return await axios.delete(BACKEND_API_URL + "/logout", config())
     .then(response => {

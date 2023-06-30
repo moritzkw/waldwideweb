@@ -4,6 +4,9 @@ import { Store } from 'vuex/types/index.js';
 import { Role } from '../types/role';
 import { SubmitEventPromise } from 'vuetify/lib/index.js';
 
+/**
+ * Validation of user input. 
+ */
 export default defineComponent({
   data() {
     return {
@@ -53,6 +56,7 @@ export default defineComponent({
       }
     }
   },
+  // Adding new user with input and save the values in the store for further processing
   methods: {
     async AddUser(event: SubmitEventPromise) {
       const result = await event;
@@ -66,6 +70,7 @@ export default defineComponent({
 
       this.dialogOpen = false;
     },
+    // Clear input fields of dialog
     CancelAddUser() {
       this.username = "";
       this.password = "";
@@ -78,6 +83,7 @@ export default defineComponent({
 });
 </script>
 
+<!-- Layout for dialog that appears when adding a new user. -->
 <template>
   <v-btn append-icon="mdi-plus" class="mr-4 my-2">
     Nutzer anlegen

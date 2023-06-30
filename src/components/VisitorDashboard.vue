@@ -104,6 +104,7 @@ export default defineComponent({
 });
 </script>
 
+<!-- Layout of visitor dashboard to show current sensor values, all forest areas and the About us card. -->
 <template>
   <v-alert
     v-model="store.state.sessionExpired"

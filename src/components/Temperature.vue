@@ -35,13 +35,14 @@ export default defineComponent({
       },
     };
   },
+  //  Define start of a date and end of a date to be able to display min & max values of a specific day.
   watch: {
     dialogOpen(dialogOpen: boolean) {
       if (!dialogOpen) return;
       var currentDate = new Date(); // Get the current date and time
       const startOfDay = new Date(currentDate);
       startOfDay.setHours(0, 0, 0, 0);
-
+      
       const endOfDay = new Date(currentDate);
       endOfDay.setHours(23, 59, 59, 999);
       this.store.commit("getMinMax", "temperature");
@@ -55,6 +56,7 @@ export default defineComponent({
     },
   },
   methods: {
+    // Shows the last seven days in the temperature chart.
     fillWeekDays(): Array<string> {
       const weekDays = new Array(
         "Montag",
@@ -65,6 +67,7 @@ export default defineComponent({
         "Samstag",
         "Sonntag",
       );
+      // Calucation of todays date and the last seven days
       let week: string[] = [];
       const today = new Date();
       for (let i = today.getDay() - 7; i < today.getDay(); i++) {
@@ -76,10 +79,11 @@ export default defineComponent({
     },
   },
   mounted() {
-  },
+  }, 
 });
 </script>
 
+<!-- Layout of dialog window which appears when pressing the temperature field. -->
 <template>
   <v-dialog v-model="dialogOpen" activator="parent" max-width="800px">
     <v-card title="Temperatur">
@@ -138,6 +142,3 @@ export default defineComponent({
     </v-card>
   </v-dialog>
 </template>
-
-<style>
-</style>

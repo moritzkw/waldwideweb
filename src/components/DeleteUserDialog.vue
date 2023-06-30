@@ -26,6 +26,7 @@ export default defineComponent({
 });
 </script>
 
+c
 <template>
   <v-row justify="center">
     <v-dialog v-model="dialogOpen" max-width="600px">

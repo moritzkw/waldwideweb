@@ -142,7 +142,7 @@ export default defineComponent({
       <v-col>
         <v-card class="card" title="Sensoren" :elevation="5">
           <v-container>
-            <GoogleMap api-key="AIzaSyBiaS391syegtj4i98-M0E7ylzmItDTDsc" style="height: 500px" :center="center"
+            <GoogleMap api-key="Add API Key!!" style="height: 500px" :center="center"
               :zoom="14">
               <Marker v-for="node in store.state.nodes" :key="node.uuid" :options="getMarkerOptions(node)"
                 @dragend="handleDragEnd">

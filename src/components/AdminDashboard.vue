@@ -100,7 +100,7 @@ export default defineComponent({
               color="error"
             ></v-alert>
           </v-row>
-          <v-row>
+          <v-row class="fill-height">
             <v-file-input
               v-model="selectedFile"
               label="Binary auswählen"
@@ -108,6 +108,8 @@ export default defineComponent({
               class="fileinput mr-8"
               variant="solo"
               show-size
+              hide-details
+              hide-label
             ></v-file-input>
             <v-text-field
               v-if="selectedFile.length > 0"

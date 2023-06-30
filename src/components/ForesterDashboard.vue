@@ -168,8 +168,8 @@ export default defineComponent({
                       <v-btn variant="tonal" size="small" block rounded="xl" @click="handlePositionButtonClick(node)">
                         {{
                           editingNode === node
-                          ? "Position Speichern"
-                          : "Position bearbeiten"
+                          ? "Speichern"
+                          : "Bearbeiten"
                         }}
                       </v-btn>
                     </div>

@@ -29,6 +29,7 @@ import router from "../router";
 import { Node } from "../types/node";
 import { AggregateMeasurement } from "../types/aggregatedData";
 
+// Initalition store to have the current state within the entire application.
 export default createStore({
   state(): State {
     return {
@@ -64,6 +65,8 @@ export default createStore({
       updates: new Array<Update>(),
     };
   },
+
+  // Backend requests 
   mutations: {
     async fetchForVisitor(state: State) {
       await GetAreas().then((areas) => (state.areas = areas));

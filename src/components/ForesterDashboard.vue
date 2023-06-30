@@ -59,12 +59,14 @@ export default defineComponent({
   },
 
   methods: {
+    // Info window of each marker and sets new position after editing
     openInfoWindow(node: any) {
       this.infoWindowNode = node;
       this.infoWindowPosition = { lat: node.latitude, lng: node.longitude };
       this.infoWindowOptions = { maxWidth: 320, maxHeight: 320 };
     },
 
+    // Changes lat & long type into float and checks whether if values are invalid 
     getMarkerOptions(node: any) {
       const latitude = parseFloat(node.latitude);
       const longitude = parseFloat(node.longitude);
@@ -124,7 +126,6 @@ export default defineComponent({
           (areas: Area[], area: Area) => areas.concat(area.areaId),
           [] as Area[]
         );
-        // return (store.state.areas as Area[]).reduce((areas: string[], area: Area) => areas.concat(area.areaId.toString()), [] as string[]);
       } else {
         return [];
       }
@@ -133,6 +134,7 @@ export default defineComponent({
 });
 </script>
 
+<!-- Layout of forester dashboard with weather information, map and position of different nodes-->
 <template>
   <v-container>
     <WeatherCardVue></WeatherCardVue>
@@ -213,7 +215,6 @@ export default defineComponent({
             @update:modelValue="updateData"
           ></v-select>
         </v-card>
-        <!-- <weather></weather> -->
       </v-col>
     </v-row>
   </v-container>

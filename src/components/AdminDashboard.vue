@@ -10,8 +10,6 @@ import { Role } from "../types/role";
 import AddUserDialog from "./AddUserDialog.vue";
 import { Update } from "../types/update";
 
-// Logo
-
 export default defineComponent({
   components: { Weather, GChart, Temperature, EditUserDialog, DeleteUserDialog, AddUserDialog },
   name: "AdminDashboard",
@@ -33,6 +31,7 @@ export default defineComponent({
   mounted() {
     this.store.commit("fetchForAdmin");
   },
+  // Checking whether binary file is up to date and adds a new version number.
   watch: {
     selectedFile: function(file) {
       if (file.length > 0) {
@@ -82,6 +81,7 @@ export default defineComponent({
 });
 </script>
 
+<!-- Layout for Admin dashboard splitted in differnet cards. Possibility to add binary file to update website, add new suers with a role, edit user & delete existing user accounts. -->
 <template>
   <v-container fluid>
     <v-col>

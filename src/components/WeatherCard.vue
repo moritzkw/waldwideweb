@@ -13,6 +13,7 @@ export default defineComponent({
   }});
 </script>
 
+<!-- Layout for weather card visible on top of the website. Contains current temperature & humiditiy of the chosen forest area. -->
 <template>
   <v-row>
     <v-col>

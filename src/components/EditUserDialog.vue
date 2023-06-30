@@ -5,6 +5,7 @@ import { Store } from "vuex/types/index.js";
 import { Role } from "../types/role";
 import { SubmitEventPromise } from "vuetify/lib/index.js";
 
+// Validation of user data
 export default defineComponent({
   props: {
     user: Object,
@@ -99,6 +100,7 @@ export default defineComponent({
 });
 </script>
 
+<!-- Layout for dialog that appears when you want to edit an user account. -->
 <template>
   <v-row justify="center">
     <v-dialog v-model="dialogOpen" max-width="600px">

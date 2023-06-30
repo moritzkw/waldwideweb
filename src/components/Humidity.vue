@@ -44,6 +44,7 @@ export default defineComponent({
     };
   },
   watch: {
+    // Calculation of the beginning and end of the day
     dialogOpen(dialogOpen: boolean) {
       if (!dialogOpen) return;
       
@@ -88,6 +89,7 @@ export default defineComponent({
 });
 </script>
 
+<!-- Dialog window which appears when clicking humidity field-->
 <template>
   <v-dialog v-model="dialogOpen" activator="parent" max-width="800px">
     <v-card title="Luftfeuchtigkeit">

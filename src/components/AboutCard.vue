@@ -6,6 +6,7 @@ export default defineComponent({
 });
 </script>
 
+<!-- This component is within the VisitorDashboard and provides a short description about the team. -->
 <template>
   <v-row>
     <v-col>
